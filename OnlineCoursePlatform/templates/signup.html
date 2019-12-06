@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{% load static %}
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <link href="{% static 'css/login-signup.css' %}" type="text/css" rel="stylesheet">
+	<link href="{% static 'css/jquery-ui.css' %}" type="text/css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+	<script src="{% static 'js/signup-script.js' %}" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body>
+<div class="card bg-light">
+<article class="card-body mx-auto" style="max-width: 400px;">
+	<h4 class="card-title mt-3 text-center">Create Account</h4>
+	<p class="text-center">Get started with your free account</p>
+
+	<form action="/check-signup/" method="post">
+		{% csrf_token %}
+	<div class="form-group input-group">
+		<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+		 </div>
+        <input id="firstname" name="firstname" class="form-control" placeholder="First name" type="text" required>
+    </div> <!-- form-group// -->
+		<div class="form-group input-group">
+		<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+		 </div>
+        <input id="lastname" name="lastname" class="form-control" placeholder="Last name" type="text" required>
+    </div> <!-- form-group// -->
+    <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+		 </div>
+        <input id="email" name="email" class="form-control" placeholder="Email address" type="email" required>
+    </div> <!-- form-group// -->
+    <div class="form-group input-group">
+		<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+		</div>
+		<select class="custom-select" style="max-width: 120px;">
+		    <option selected="">+90</option>
+		</select>
+    	<input id="phone" name="phone" class="form-control" placeholder="Phone number" type="text" required>
+    </div> <!-- form-group// -->
+
+		 <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+		</div>
+    	<input id="university" name="university" class="form-control" placeholder="University" type="text" style="display: None">
+			 <select id="uni-selection" class="custom-select">
+
+        <option value="1">Dokuz Eylül University</option>
+				 <option value="2">Ege University</option>
+
+    </select>
+    </div> <!-- form-group// -->
+
+		<div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-birthday-cake"></i> </span>
+		</div>
+    	<input id="bday" name="bday" class="form-control" placeholder="Date of Birth" type="text" required>
+			<input id="datepicker"  type="text" required>
+    </div> <!-- form-group// -->
+
+			<div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+		</div>
+    	<input id="address" name="address" class="form-control" placeholder="Address" type="text" required>
+    </div> <!-- form-group// -->
+
+
+    <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+		</div>
+        <input id="pw1" name="pw1" class="form-control" placeholder="Create password" type="password" required>
+    </div> <!-- form-group// -->
+    <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+		</div>
+        <input id="pw2" name="pw2" class="form-control" placeholder="Repeat password" type="password" required>
+    </div> <!-- form-group// -->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
+    </div> <!-- form-group// -->
+    <p class="text-center">Have an account? <a href="/home">Log In</a> </p>
+</form>
+</article>
+</div> <!-- card.// -->
+
+</div>
+<!--container end.//-->
+</body>
+</html>
