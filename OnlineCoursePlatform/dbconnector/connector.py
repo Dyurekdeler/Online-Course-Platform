@@ -47,8 +47,8 @@ class Query:
             self.cursor.execute(query)
             return "SUCCESS"
         except psycopg2.Error as e:
-            print( e.pgerror)
-            raise Exception(e.pgerror)
+            print(e.pgerror)
+            return 'FAILURE', Exception(e.pgerror)
 
     def update(self, query):
         try:

@@ -28,3 +28,12 @@ def delete_person(personid):
 
 def delete_student(personid):
     return ''' DELETE FROM tbl_student WHERE student_id = '%s' ; ''' %(personid)
+
+def add_person_student(firstname, lastname, email,address,phone,bday,pwd, uni):
+    return ''' WITH new_student as (
+            INSERT INTO public.tbl_person(first_name, last_name, email, password, date_of_birth, address, phone, person_type)
+            VALUES ( '%s', '%s', '%s', '%s', '%s', '%s', '%s', 'STU') returning person_id )
+            INSERT INTO tbl_student(student_id, university_id) SELECT person_id, %s FROM new_student ''' %( firstname, lastname, email, pwd, bday, address, phone, uni)
+
+def get_ordered_courses(studentid):
+    return ''' SELECT course_id FROM tbl_order WHERE student_id = '%s' ; ''' %(studentid)

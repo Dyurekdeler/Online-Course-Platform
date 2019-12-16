@@ -15,5 +15,6 @@ urlpatterns = [
     path('delete-account/', views.delete_account),
     path('help/', views.help),
     path('mycourses/', views.mycourses),
-    path('course/', views.course )
+    path('course/', views.course ),
+    path('get-data/', views.get_data)
 ]

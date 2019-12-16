@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.core.serializers import json
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.shortcuts import render, redirect
 import controller.controller as CONT
 import query.macros as MACRO
 from Model.models import Student
@@ -45,7 +48,6 @@ def check_login(request):
 def check_signup(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
-
         # create a form instance and populate it with data from the request:
         form = signUpForm(request.POST)
         # check whether it's valid:
@@ -65,17 +67,17 @@ def check_signup(request):
             university = form.data['university']
 
             if password2 != password1:
-                return render(request, "signup.html")
+                print('passwords do not match')
+                return redirect("../signup")
             else:
                 student = Student(firstname, lastname, email, address, password1, bday, phone, None, university)
-                created_person = CONT.get_from_db(MACRO.add_person(student.firstname,student.lastname,student.email,student.address,student.phone,student.bday,student.password))
-
-                if created_person[0] == 'SUCCESS' and created_person[1][0][0] is not None:
-
-                    if CONT.insert_db(MACRO.add_student_with_uni(created_person[1][0][0], student.universityId)) == 'SUCCESS':
-                        return render(request, "login.html")
-            return render(request,"signup.html") # db error
-    return render(request, 'home.html')
+                created_student = CONT.insert_db(MACRO.add_person_student(student.firstname,student.lastname,student.email,student.address,student.phone,student.bday,student.password, student.universityId))
+                print(created_student)
+                if created_student == 'SUCCESS':
+                    return redirect("../login/")
+                else:
+                    return redirect("../signup") # db error
+    return redirect("../home/") # form is not valid error
 
 def update_account(request):
     if request.method == 'POST':
@@ -124,3 +126,13 @@ def delete_account(request):
 
 def course(request):
     return render(request, "coursepage.html")
+
+
+def get_data(request):
+    studentid = (request.POST.get('intent' , False)).strip('/"') #get student id from frontend
+    try:
+        ordered_courses = CONT.get_from_db(MACRO.get_ordered_courses(studentid)) #retrieve query set from db
+    except Exception as ex:
+        return JsonResponse({'status': '400', 'response': str(ex)}) #db error > warn front end
+    #return HttpResponse(json.dumps(ordered_courses,cls=DjangoJSONEncoder),content_type="application/json") #db success, return the query set to front end
+    return JsonResponse({'response':'200', 'data':ordered_courses})

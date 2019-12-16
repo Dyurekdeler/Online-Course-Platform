@@ -12,6 +12,8 @@
     <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/jquery-ui.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/mycourses-script.js' %}" type="text/javascript" charset="utf-8"></script>
+
 </head>
 
 <body>
@@ -45,14 +47,12 @@
 <div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 
-   <ul class="list-group">
+   <ul class="list-group" id="myCoursesList">
+       <label id="noCourse" class="hidden">You have no any purchased courses!</label>
   <a href="#" class="list-group-item">
-      <img class="thumbnail" src="https://abchorizon.com.tr/data/2018/12/Evening_English_1-1150x647.jpg">
+      <img class="thumbnail" src="">
       First item</a>
-  <a href="#" class="list-group-item"><img class="thumbnail" src="https://abchorizon.com.tr/data/2018/12/Evening_English_1-1150x647.jpg">
-      Second item</a>
-  <a href="#" class="list-group-item"><img class="thumbnail" src="https://abchorizon.com.tr/data/2018/12/Evening_English_1-1150x647.jpg">
-      Third item</a>
+
 </ul>
 </div>
 </div>
