@@ -10,7 +10,7 @@
     <script src="{% static 'js/jquery.min.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
-    <script src="{% static 'js/signup-script.js' %}" type="text/javascript" charset="utf-8"></script>
+
 </head>
 
 <body>
@@ -26,7 +26,8 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/mycourses">My Courses <span class="sr-only">(current)</span></a>
+
+                <a class="nav-link" id="myCourses" href="{% url 'mycourses' personid %}">My Courses <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/help">Get Help</a>
@@ -46,7 +47,7 @@
 
         <form action="/update-account/" method="post">
             {% csrf_token %}
-            <input id="personid" type="text" name="personid" value=" {{ personid }}" style="display: none"/>
+            <input id="personid" type="text" name="personid" value=" {{personid}}" style="display: none"/>
             <div class="form-group input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text"> <i class="fa fa-user"></i> </span>
@@ -118,7 +119,7 @@
         </form>
         <form action="/delete-account/" method="post">
             {% csrf_token %}
-            <input id="personid2" type="text" name="personid" value=" {{ personid }}" style="display: none"/>
+            <input id="personid2" type="text" name="personid" value=" {{personid}}" style="display: none"/>
             <button id="delete-btn" type="submit" class="btn btn-primary btn-block"> Delete Account</button>
         </form>
 

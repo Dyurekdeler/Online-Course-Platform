@@ -14,7 +14,7 @@ urlpatterns = [
     path('update-account/', views.update_account),
     path('delete-account/', views.delete_account),
     path('help/', views.help),
-    path('mycourses/', views.mycourses),
+    path('mycourses/(?P<person_id>[0-9]+)', views.mycourses, name="mycourses"),
     path('course/', views.course ),
     path('get-data/', views.get_data)
 ]

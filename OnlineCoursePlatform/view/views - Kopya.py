@@ -38,13 +38,12 @@ def check_login(request):
             username = form.data['username']
             password = form.data['password']
             try:
-                get_credentials = CONT.get_from_db(MACRO.user_login(username, password))
-                print (get_credentials)
+                get_credentials = CONT.get_from_db(MACRO.get_person_by_email(username))
             except:
-                return render(request, "login.html", {'error':True})
+                if get_credentials[0] == 'SUCCESS' and  len(get_credentials[1]) > 0 and get_credentials[1][0][4] == password:
 
-            if len(get_credentials[1]) > 0 and get_credentials[1][0][4] == password:
                 return profile(request, username)
+            return render(request, "login.html", {'error':True})
     return render(request, 'home.html')
 
 @csrf_exempt

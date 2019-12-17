@@ -114,7 +114,8 @@ INSERT INTO public.tbl_university(university_name, university_location, discount
 
 INSERT INTO public.tbl_person(
 	first_name, last_name, email, password, date_of_birth, address, phone, person_type)
-	VALUES ('Semih','Utku','semihutku@mail.com',12345678,'01.01.1970','izmir','0554413061','LEC');
+	VALUES ('Semih','Utku','semihutku@mail.com',12345678,'01.01.1970','izmir','0554413061','LEC'),
+	('Deniz','Yürekdeler','dyurekdeler@live.com',12345678,'01.01.1970','izmir','0554413061','STU');
 
 INSERT INTO public.tbl_lecturer(lecturer_id, university_id)
 	VALUES (1,'1');
@@ -124,10 +125,13 @@ INSERT INTO public.tbl_course(
 	 ('web','desc',15,'https://www.youtube.com/watch?v=aT-kWWPDZmo','software',1,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg'),
 	 ('database','desc',15,'https://www.youtube.com/watch?v=aT-kWWPDZmo','software',1,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg');
 
+INSERT INTO public.tbl_student(student_id, university_id)
+VALuES (2,1);
+
 INSERT INTO public.tbl_order(
 	student_id, course_id, order_date)
-	VALUES (1,1,'12.05.2010'),
-	(1,2,'12.05.2010');
+	VALUES (2,1,'12.05.2010'),
+	(2,2,'12.05.2010');
 CREATE USER nisakko WITH PASSWORD '123456';
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nisakko;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO nisakko;

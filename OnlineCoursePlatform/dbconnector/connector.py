@@ -39,8 +39,12 @@ class Query:
         try:
             self.cursor.execute(query)
             return 'SUCCESS', self.cursor.fetchall()
+        except psycopg2.Error as e:
+            print (e.pgerror)
+            raise Exception(e.pgerror)
         except:
-            return 'FAILURE', (sys.exc_info()[1])
+            raise (sys.exc_info()[1])
+            #return 'FAILURE', (sys.exc_info()[1])
 
     def insert(self, query):
         try:
@@ -48,7 +52,7 @@ class Query:
             return "SUCCESS"
         except psycopg2.Error as e:
             print(e.pgerror)
-            return 'FAILURE', Exception(e.pgerror)
+            raise Exception(e.pgerror)
 
     def update(self, query):
         try:
