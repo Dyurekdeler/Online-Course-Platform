@@ -49,17 +49,16 @@
 					<div class="brand_logo_container">
 						<img src="https://files.maatos.com/2019/05/72e5e917-create-digital-learning-environment-1024x1024.png" width="100px" height="100px" class="brand_logo" alt="Logo">
 					</div>
+					      {% if messages %}
+    						<ul class="messages">
+							{% for message in messages %}
+								<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+							{% endfor %}
+								</ul>
+							{% endif %}
 				</div>
 				<div class="d-flex justify-content-center form_container">
 					<form action="/check-login/" method="post">
-
-                          {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
 
                         <div class="input-group mb-3">
 							<div class="input-group-append">

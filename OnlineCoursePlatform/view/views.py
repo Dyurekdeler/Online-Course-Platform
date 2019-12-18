@@ -27,6 +27,12 @@ def help(request):
 def mycourses(request,person_id):
     return render(request, "mycourses.html", {'personid':person_id})
 
+def course(request):
+    courseid = (request.POST.get('courseid', False))  # get courseid from frontend
+    if courseid is not None:
+        courseid.replace('"', '')
+    return render(request, "coursepage.html")
+
 def profile(request,username):
     person_student = CONT.get_from_db(MACRO.get_person_student(username))
     if person_student[0] == 'SUCCESS' and person_student[1] is not None:
@@ -132,8 +138,7 @@ def delete_account(request):
                 return render(request, "home.html")
     return render(request, 'profile.html')
 
-def course(request):
-    return render(request, "coursepage.html")
+
 
 @csrf_exempt
 def get_data(request):

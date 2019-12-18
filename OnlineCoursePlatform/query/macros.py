@@ -32,4 +32,4 @@ def add_person_student(firstname, lastname, email,address,phone,bday,pwd, uni):
             INSERT INTO tbl_student(student_id, university_id) SELECT person_id, %s FROM new_student ''' %( firstname, lastname, email, pwd, bday, address, phone, uni)
 
 def get_ordered_courses(studentid):
-    return ''' SELECT * FROM tbl_order WHERE student_id = '%s' ; ''' %(studentid)
+    return ''' SELECT * FROM tbl_course WHERE course_id IN (SELECT course_id FROM tbl_order WHERE student_id = '%s') ; ''' %(studentid)
