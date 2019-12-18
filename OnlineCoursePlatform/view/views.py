@@ -1,11 +1,15 @@
+from django.contrib import messages
 from django.core.serializers import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
+
 import controller.controller as CONT
 import query.macros as MACRO
 from Model.models import Student
-from view.forms import NameForm,signUpForm, idForm
+from view.forms import loginForm,signUpForm, idForm
+from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
@@ -32,20 +36,22 @@ def profile(request,username):
 @csrf_exempt
 def check_login(request):
     if request.method == 'POST':
-        form = NameForm(request.POST)
-        if form.is_valid():
+        form = loginForm(request.POST)
 
+        if form.is_valid():
             username = form.data['username']
             password = form.data['password']
             try:
                 get_credentials = CONT.get_from_db(MACRO.user_login(username, password))
-                print (get_credentials)
             except:
-                return render(request, "login.html", {'error':True})
-
+                return redirect("../home") #db error
             if len(get_credentials[1]) > 0 and get_credentials[1][0][4] == password:
-                return profile(request, username)
-    return render(request, 'home.html')
+                return profile(request, username) #succesful login
+
+    messages.add_message(request, messages.INFO, "Invalid username or password!")
+    return redirect('../login') #credentials does not match
+
+
 
 @csrf_exempt
 def check_signup(request):
@@ -70,14 +76,14 @@ def check_signup(request):
             university = form.data['university']
 
             if password2 != password1:
-                print('passwords do not match')
-                return redirect("../signup")
+                messages.add_message(request, messages.INFO, "Provided passwords does not match!")
+                return redirect("../signup") #passwords do not match
             else:
                 student = Student(firstname, lastname, email, address, password1, bday, phone, None, university)
-                created_student = CONT.insert_db(MACRO.add_person_student(student.firstname,student.lastname,student.email,student.address,student.phone,student.bday,student.password, student.universityId))
-                if created_student == 'SUCCESS':
+                try:
+                    CONT.insert_db(MACRO.add_person_student(student.firstname,student.lastname,student.email,student.address,student.phone,student.bday,student.password, student.universityId))
                     return redirect("../login/")
-                else:
+                except:
                     return redirect("../signup") # db error
     return redirect("../home/") # form is not valid error
 
@@ -134,13 +140,9 @@ def get_data(request):
     studentid = (request.POST.get('studentid' , False)) #get student id from frontend
     if studentid is not None:
         studentid = studentid.replace('"', '')
-    print('id',studentid)
     try:
         ordered_courses = CONT.get_from_db(MACRO.get_ordered_courses(studentid)) #retrieve query set from db
-        print('hello', ordered_courses)
     except Exception as ex:
-        print('error')
         return JsonResponse({'status': '400', 'response': str(ex)}) #db error > warn front end
-    print('sucess')
     #return HttpResponse(json.dumps(ordered_courses,cls=DjangoJSONEncoder),content_type="application/json") #db success, return the query set to front end
-    return JsonResponse({'response':'200', 'data':ordered_courses})
+    return JsonResponse({'response':'200', 'data':ordered_courses[1]})

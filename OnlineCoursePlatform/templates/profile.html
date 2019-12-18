@@ -119,7 +119,7 @@
         </form>
         <form action="/delete-account/" method="post">
             {% csrf_token %}
-            <input id="personid2" type="text" name="personid" value=" {{personid}}" style="display: none"/>
+            <input id="del-personid" type="text" name="personid" value=" {{personid}}" style="display: none"/>
             <button id="delete-btn" type="submit" class="btn btn-primary btn-block"> Delete Account</button>
         </form>
 

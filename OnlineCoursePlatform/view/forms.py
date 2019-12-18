@@ -1,11 +1,9 @@
 
 from django import forms
 
-class NameForm(forms.Form):
-
+class loginForm(forms.Form):
     username = forms.CharField(label="Username", max_length=100)
     password = forms.PasswordInput()
-
 
 class signUpForm(forms.Form):
 

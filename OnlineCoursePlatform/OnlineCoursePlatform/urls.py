@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', views.home), # welcome page
     path('signup/', views.sign_up),
-    path('login/', views.login),
+    path('login/', views.login, name="login"),
     path('check-login/', views.check_login),
     path('check-signup/', views.check_signup),
     path('update-account/', views.update_account),
