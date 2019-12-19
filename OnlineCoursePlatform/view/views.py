@@ -49,12 +49,12 @@ def course(request,course_id,is_bought):
         return redirect('../../home')
     return render(request, "coursepage.html", {'course': course[1][0], 'is_bought':is_bought})
 
-def profile(request,username):
-    person_student = CONT.get_from_db(MACRO.get_person_student(username))
-    if person_student[0] == 'SUCCESS' and person_student[1] is not None:
-        return render(request, "profile.html", {'personid': person_student[1][0][0], 'firstname': person_student[1][0][1], 'lastname': person_student[1][0][2],'email': person_student[1][0][3],
-                                                'password': person_student[1][0][4],'bday': person_student[1][0][5], 'address': person_student[1][0][6], 'phone': person_student[1][0][7],
-                                                'university': person_student[1][0][11]})
+def profile(request,user):
+    
+    if user[0] == 'SUCCESS' and user[1] is not None:
+        return render(request, "profile.html", {'personid': user[1][0][0], 'firstname': user[1][0][1], 'lastname': user[1][0][2],'email': user[1][0][3],
+                                                'password': user[1][0][4],'bday': user[1][0][5], 'address': user[1][0][6], 'phone': user[1][0][7],
+                                                'university': user[1][0][11]})
 @csrf_exempt
 def check_login(request):
     if request.method == 'POST':
@@ -64,11 +64,11 @@ def check_login(request):
             username = form.data['username']
             password = form.data['password']
             try:
-                get_credentials = CONT.get_from_db(MACRO.user_login(username, password))
+                user = CONT.get_from_db(MACRO.get_user(username, password))
             except:
                 return redirect("../home") #db error
-            if len(get_credentials[1]) > 0 and get_credentials[1][0][4] == password:
-                return profile(request, username) #succesful login
+            if len(user[1]) > 0 and user[1][0][4] == password:
+                return profile(request, user) #succesful login
 
     messages.add_message(request, messages.INFO, "Invalid username or password!")
     return redirect('../login') #credentials does not match
@@ -97,7 +97,7 @@ def check_signup(request):
             phone = form.data['phone']
             university = form.data['university']
             person_type = form.data['person_type']
-            print(person_type)
+            
             if password2 != password1:
                 messages.add_message(request, messages.INFO, "Provided passwords does not match!")
                 return redirect("../signup") #passwords do not match
