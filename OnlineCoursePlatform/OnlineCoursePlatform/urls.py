@@ -14,8 +14,7 @@ urlpatterns = [
     path('update-account/', views.update_account),
     path('delete-account/', views.delete_account),
     path('help/', views.help),
-    path('course/', views.course),
+    path('course/(?P<course_id>[0-9]+)/(?P<is_bought>[0-1])', views.course, name="course"),
     path('mycourses/(?P<person_id>[0-9]+)', views.mycourses, name="mycourses"),
-
-    path('get-data/', views.get_data)
+    path('buy-course/', views.buy_course)
 ]

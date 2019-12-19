@@ -92,9 +92,9 @@
 		</div>
     	<input id="university" name="university" class="form-control" placeholder="University" type="text" style="display: None">
 			 <select id="uni-selection" class="custom-select">
-
-        <option value="1">Dokuz Eylül University</option>
-				 <option value="2">Ege University</option>
+				 {% for uni in universities %}
+                	<option value="{{ uni.0 }}">{{ uni.1 }}</option>
+       			{% endfor %}
 
     </select>
     </div> <!-- form-group// -->
@@ -126,7 +126,17 @@
 		</div>
         <input id="pw2" name="pw2" class="form-control" placeholder="Repeat password" type="password" required>
     </div> <!-- form-group// -->
-    <div class="form-group">
+		<div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+		</div>
+    	<input id="person_type" name="person_type" class="form-control" placeholder="What is your role" type="text" style="display: None">
+			 <select id="persontype-selection" class="custom-select">
+				 <option value="STU">Student</option>
+				 <option value="LEC">Lecturer</option>
+    </select>
+    </div> <!-- form-group// -->
+		<div class="form-group">
         <button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
     </div> <!-- form-group// -->
     <p class="text-center">Have an account? <a href="/home">Log In</a> </p>

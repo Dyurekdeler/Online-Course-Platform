@@ -7,16 +7,25 @@ from django.urls import reverse
 
 import controller.controller as CONT
 import query.macros as MACRO
-from Model.models import Student
+from Model.Student import Student
+from Model.Lecturer import Lecturer
 from view.forms import loginForm,signUpForm, idForm
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
-    return render(request, "home.html")
+    try:
+        courses = CONT.get_from_db(MACRO.GET_ALL_COURSES)  # retrieve query set from db
+    except Exception:
+        return redirect('../home')
+    return render(request, "home.html", {'courses':courses[1]})
 
 def sign_up(request):
-    return render(request, "signup.html")
+    try:
+        unis = CONT.get_from_db(MACRO.GET_ALL_UNIS)  # retrieve query set from db
+    except Exception:
+        return redirect('../home')
+    return render(request, "signup.html", {'universities':unis[1]})
 
 def login(request):
     return  render(request, "login.html")
@@ -25,13 +34,20 @@ def help(request):
     return render(request, "help.html")
 
 def mycourses(request,person_id):
-    return render(request, "mycourses.html", {'personid':person_id})
+    try:
+        ordered_courses = CONT.get_from_db(MACRO.get_ordered_courses(person_id))  # retrieve query set from db
+    except Exception:
+        return redirect('../home')
+    return render(request, "mycourses.html", {'personid':person_id, 'ordered_courses':ordered_courses[1]})
 
-def course(request):
-    courseid = (request.POST.get('courseid', False))  # get courseid from frontend
-    if courseid is not None:
-        courseid.replace('"', '')
-    return render(request, "coursepage.html")
+@csrf_exempt
+def course(request,course_id,is_bought):
+    print(is_bought)
+    try:
+        course = CONT.get_from_db(MACRO.get_course(course_id))  # retrieve query set from db
+    except Exception:
+        return redirect('../../home')
+    return render(request, "coursepage.html", {'course': course[1][0], 'is_bought':is_bought})
 
 def profile(request,username):
     person_student = CONT.get_from_db(MACRO.get_person_student(username))
@@ -80,17 +96,28 @@ def check_signup(request):
             bday = form.data['bday']
             phone = form.data['phone']
             university = form.data['university']
-
+            person_type = form.data['person_type']
+            print(person_type)
             if password2 != password1:
                 messages.add_message(request, messages.INFO, "Provided passwords does not match!")
                 return redirect("../signup") #passwords do not match
             else:
-                student = Student(firstname, lastname, email, address, password1, bday, phone, None, university)
-                try:
-                    CONT.insert_db(MACRO.add_person_student(student.firstname,student.lastname,student.email,student.address,student.phone,student.bday,student.password, student.universityId))
-                    return redirect("../login/")
-                except:
-                    return redirect("../signup") # db error
+                if person_type == 'STU':
+                    student = Student(firstname, lastname, email, address, password1, bday, phone, university)
+                    try:
+                        CONT.insert_db(MACRO.add_person_student(student.firstname,student.lastname,student.email,student.address,student.phone,student.bday,student.password, student.universityId))
+                        return redirect("../login/")
+                    except:
+                        return redirect("../signup") # db error
+                else:
+                    lecturer = Lecturer(firstname, lastname, email, address, password1, bday, phone, university)
+                    try:
+                        CONT.insert_db(MACRO.add_person_lecturer(lecturer.firstname, lecturer.lastname, lecturer.email,
+                                                                lecturer.address, lecturer.phone, lecturer.bday,
+                                                                lecturer.password, lecturer.universityId))
+                        return redirect("../login/")
+                    except:
+                        return redirect("../signup")  # db error
     return redirect("../home/") # form is not valid error
 
 def update_account(request):
@@ -138,8 +165,6 @@ def delete_account(request):
                 return render(request, "home.html")
     return render(request, 'profile.html')
 
-
-
 @csrf_exempt
 def get_data(request):
     studentid = (request.POST.get('studentid' , False)) #get student id from frontend
@@ -149,5 +174,7 @@ def get_data(request):
         ordered_courses = CONT.get_from_db(MACRO.get_ordered_courses(studentid)) #retrieve query set from db
     except Exception as ex:
         return JsonResponse({'status': '400', 'response': str(ex)}) #db error > warn front end
-    #return HttpResponse(json.dumps(ordered_courses,cls=DjangoJSONEncoder),content_type="application/json") #db success, return the query set to front end
-    return JsonResponse({'response':'200', 'data':ordered_courses[1]})
+    return JsonResponse({'response':'200', 'data':ordered_courses})
+
+def buy_course(request):
+    pass

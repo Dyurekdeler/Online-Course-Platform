@@ -17,6 +17,7 @@ class signUpForm(forms.Form):
     phone = forms.CharField(label="phone",min_length=1,max_length=100)
     university = forms.CharField(label = "university",min_length=1, max_length=100)
     #personid = forms.CharField(label="personid",min_length=1,max_length=100)
+    person_type = forms.CharField(label = "persontype",min_length=1, max_length=100)
 
 class idForm(forms.Form):
     personid = forms.CharField(label="personid",min_length=1,max_length=100)

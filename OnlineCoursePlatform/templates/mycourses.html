@@ -12,7 +12,7 @@
     <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/jquery-ui.js' %}" type="text/javascript" charset="utf-8"></script>
-    <script src="{% static 'js/mycourses-script.js' %}" type="text/javascript" charset="utf-8"></script>
+
 
 </head>
 
@@ -51,7 +51,9 @@
    <ul class="list-group" id="myCoursesList">
        <label id="noCourse" class="hidden">You have no any purchased courses!</label>
 
-
+       {% for course in ordered_courses %}
+                <a id="{{course.0}}" href="{% url 'course' course.0 1 %}">{{course.1}}</a><img class="thumbnail" src="{{course.7}}"><p>{{course.2}}</p>
+       {% endfor %}
     </ul>
 </div>
 </div>

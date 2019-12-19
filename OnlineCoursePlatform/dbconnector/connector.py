@@ -40,11 +40,10 @@ class Query:
             self.cursor.execute(query)
             return 'SUCCESS', self.cursor.fetchall()
         except psycopg2.Error as e:
-            print (e.pgerror)
+            print(e.pgerror)
             raise Exception(e.pgerror)
         except:
-            raise (sys.exc_info()[1])
-            #return 'FAILURE', (sys.exc_info()[1])
+            return 'FAILURE', (sys.exc_info()[1])
 
     def insert(self, query):
         try:

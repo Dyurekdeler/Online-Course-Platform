@@ -49,16 +49,16 @@
 <div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 
-   <ul class="list-group">
-  <a href="#" class="list-group-item">
-      <img class="thumbnail" src="https://abchorizon.com.tr/data/2018/12/Evening_English_1-1150x647.jpg">
-      First item</a>
-  <a href="#" class="list-group-item"><img class="thumbnail" src="https://abchorizon.com.tr/data/2018/12/Evening_English_1-1150x647.jpg">
-      Second item</a>
-  <a href="#" class="list-group-item"><img class="thumbnail" src="https://abchorizon.com.tr/data/2018/12/Evening_English_1-1150x647.jpg">
-      Third item</a>
+   <ul class="list-group" id="myCoursesList">
 
-</ul>
+       {% for course in courses %}
+            <label>Category {{ course.5 }}</label>
+                <a id="{{course.0}}" href="{% url 'course' course.0 0 %}">{{course.1}}</a><img class="thumbnail" src="{{course.7}}"><p>{{course.2}}</p>
+       <label>Lecturer {{ course.6 }}</label>
+
+       {% endfor %}
+
+    </ul>
 </div>
 </div>
 
