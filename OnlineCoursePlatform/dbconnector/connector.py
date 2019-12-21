@@ -43,7 +43,10 @@ class Query:
             print(e.pgerror)
             raise Exception(e.pgerror)
         except:
+            print(sys.exc_info()[1])
             return 'FAILURE', (sys.exc_info()[1])
+            raise Exception
+
 
     def insert(self, query):
         try:

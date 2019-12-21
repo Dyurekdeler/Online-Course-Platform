@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Online Course Platform Admin UI</title>
+    {% load static %}
+
+    <link href="{% static 'css/bootstrap.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-toggle.min.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/datatables.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/modal.css' %}" type="text/css" rel="stylesheet">
+
+    <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/jquery-ui.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/datatables.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/admin-script.js' %}" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>
+    <div id='editModal' class="modal">
+
+        <div class="modal-content">
+        <div class="modal-header">
+                <label id="header" class="modal-label header"></label>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+        </div>
+
+        <div class="form-group row">
+                <label id="label1" class="modal-label"></label>
+                <input id="input1" class="modal-input" type="text" name="newvalue" required>
+            </div>
+                <div class="form-group row">
+                <label id="label2" class="modal-label"></label>
+                <input id="input2" class="modal-input" type="text" name="newvalue" required>
+            </div>
+                <div class="form-group row">
+                <label id="label3" class="modal-label"></label>
+                <input id="input3" class="modal-input" type="text" name="newvalue" required>
+            </div>
+            <div class="modal-footer">
+                <button id="dataChange" class="btn change" type="submit">Change</button>
+                <button class="btn-close" onclick="closeModal('editModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container h-100">
+    <div class="d-flex justify-content-center h-100">
+        <div id="maintanence-panel" class="panel-body">
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapsecountry" role="button"
+                        aria-expanded="false" aria-controls="collapsecountry" style=" width:100%; text-align:left;">
+                        <b>People</b>
+                    </a>
+                </p>
+            </div>
+            
+            <div class="collapse" id="collapsecountry">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Country
+                    </button>
+
+                    <table id="personlist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Person ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Birthdate</th>
+                                <th>Address</th>
+                                <th>Phone</th>
+                                <th>Person Type</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+
+            </div>
+        </div>
+</div>
+</body>
+
+
+
+</html>

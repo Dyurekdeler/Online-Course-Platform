@@ -22,7 +22,6 @@ CREATE TABLE tbl_university (
 
 CREATE TABLE tbl_student(
 	student_id INT NOT NULL PRIMARY KEY,
-	family_id INT,
 	university_id INT,
 	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id),
 	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_person"(person_id)
@@ -57,13 +56,13 @@ CREATE TABLE tbl_course (
 
 CREATE TABLE tbl_comment (
 	comment_id SERIAL PRIMARY KEY,
-	student_id INT NOT NULL,
+	person_id INT NOT NULL,
 	description TEXT NOT NULL,
 	title TEXT NOT NULL,
 	course_id INT NOT NULL,
 	post_date TIMESTAMP WITH TIME ZONE NOT NULL,
 	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id),
-	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id)
+	CONSTRAINT "fk_personId" FOREIGN KEY("person_id") REFERENCES public."tbl_person"(person_id)
 );
 
 CREATE TABLE tbl_report (
@@ -76,15 +75,6 @@ CREATE TABLE tbl_report (
 	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id)
 );
 
-CREATE TABLE tbl_family (
-	family_id SERIAL PRIMARY KEY,
-	student1_id INT NOT NULL UNIQUE,
-	student2_id INT NOT NULL UNIQUE,
-	creation_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	CONSTRAINT "fk_studentId1" FOREIGN KEY("student1_id") REFERENCES public."tbl_student"(student_id),
-	CONSTRAINT "fk_studentId2" FOREIGN KEY("student2_id") REFERENCES public."tbl_student"(student_id),
-	CONSTRAINT "check_students" CHECK(student1_id != student2_id)
-);
 
 CREATE TABLE tbl_order (
 	order_id SERIAL PRIMARY KEY,
@@ -126,7 +116,7 @@ INSERT INTO public.tbl_course(
 	 ('database','desc',15,'https://www.youtube.com/watch?v=aT-kWWPDZmo','software',1,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg');
 
 INSERT INTO public.tbl_student(student_id, university_id)
-VALuES (2,1);
+VALUES (2,1);
 
 INSERT INTO public.tbl_order(
 	student_id, course_id, order_date)

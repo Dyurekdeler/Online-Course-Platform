@@ -18,7 +18,8 @@
 <body>
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="../../home">Home</a>
+     <a class="navbar-brand" href="{% url 'home' personid %}">Home</a>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -26,15 +27,21 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+            {% if personid == '0' %}
             <li class="nav-item">
-                <a class="nav-link" href="../../signup">Sign Up</a>
+                <a class="nav-link" href="{% url 'signup' personid %}">Sign Up</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../../login">Login</a>
+                <a class="nav-link" href="{% url 'login' personid %}">Login</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../../help">Get Help</a>
-            </li>
+            {% else %}
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
+
+            {% if persontype == 'LEC' %}
+                <a class="nav-link" href="{% url 'addcourse' personid %}">Add Course</a>
+            {% endif %}
+            {% endif %}
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -48,11 +55,45 @@
         <p>{{ course.1 }}</p>
         <iframe width="420" height="315" src="{{ course.4 }}" frameborder="0" allowfullscreen></iframe>
         <p>{{ course.2 }}</p>
+        {% if personid == '0' %}
+            <label>Log in to buy this course!</label>
 
-        {% if is_bought == '0' %}
+        {% else %}
+            {% if bought == False  %}
                 <label>{{ course.3 }}</label>
-               <button id="{{ course.0 }}" class="buyCourse">Buy This Course</button>
+               <a href="{% url 'buycourse' personid course.0 %}">Buy this course</a>
+            {% endif %}
        {% endif %}
+         <ul class="list-group" id="courseComments">
+       {% for comment in comments %}
+            <label>User Name {{ comment.0 }}</label>
+             <label>Comment Title {{ comment.2 }}</label>
+            <p>{{comment.1}}</p>
+             <label>Date : {{comment.3}}</label>
+       {% endfor %}
+    </ul>
+
+        {% if personid != '0' %}
+        <div class="d-flex justify-content-center form_container">
+					<form action="{% url 'add-comment' personid course.0 %}" method="post">
+
+                        <div class="input-group mb-3">
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-user"></i></span>
+							</div>
+							<input id="title" name="title" type="text"  class="form-control input_user" value="" placeholder="title">
+						</div>
+						<div class="input-group mb-2">
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+							</div>
+							<input id="description" name="description"class="form-control input_pass" value="" placeholder="description">
+						</div>
+							<div class="d-flex justify-content-center mt-3 container">
+				 	<button type="submit" name="button" class="btn">Add Comment</button>
+				   </div>
+        {% endif %}
+
         </div>
     </div>
 </div>

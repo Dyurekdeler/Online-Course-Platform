@@ -18,7 +18,11 @@
 <body>
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="../home">Home</a>
+    <a class="navbar-brand" href="{% url 'home' personid %}">Home</a>
+
+    {% if personid != '0' %}
+    <label>Hello {{ personname }}</label>
+    {% endif %}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -26,15 +30,22 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+            {% if personid == '0' %}
             <li class="nav-item">
-                <a class="nav-link" href="../signup">Sign Up</a>
+                <a class="nav-link" href="{% url 'signup' personid %}">Sign Up</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../login">Login</a>
+                <a class="nav-link" href="{% url 'login' personid %}">Login</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../help">Get Help</a>
-            </li>
+            {% else %}
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
+            <a class="nav-link" href="{% url 'profile' personid %}">Profile</a>
+            {% if persontype == 'LEC' %}
+                <a class="nav-link" href="{% url 'addcourse' personid %}">Add Course</a>
+            {% endif %}
+            {% endif %}
+
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -53,11 +64,9 @@
 
        {% for course in courses %}
             <label>Category {{ course.5 }}</label>
-                <a id="{{course.0}}" href="{% url 'course' course.0 0 %}">{{course.1}}</a><img class="thumbnail" src="{{course.7}}"><p>{{course.2}}</p>
+           <a id="{{course.0}}" href="{% url 'course' personid course.0 %}">{{course.1}}</a><img class="thumbnail" src="{{course.7}}"><p>{{course.2}}</p>
        <label>Lecturer {{ course.6 }}</label>
-
        {% endfor %}
-
     </ul>
 </div>
 </div>

@@ -4,17 +4,22 @@ from django.urls import path
 from view import views
 
 urlpatterns = [
-    path('', views.home),
-    path('admin/', admin.site.urls),
-    path('home/', views.home), # welcome page
-    path('signup/', views.sign_up),
-    path('login/', views.login, name="login"),
+    #path('admin/', admin.site.urls),
+    path('admin/', views.admin),
+    path('', views.home, name="logout"), # welcome page
+    path('home/(?P<person_id>[0-9]+)', views.home_user, name="home"),
+    path('signup/(?P<person_id>[0-9]+)', views.sign_up, name="signup"),
+    path('login/(?P<person_id>[0-9]+)', views.login, name="login"),
     path('check-login/', views.check_login),
     path('check-signup/', views.check_signup),
     path('update-account/', views.update_account),
     path('delete-account/', views.delete_account),
-    path('help/', views.help),
-    path('course/(?P<course_id>[0-9]+)/(?P<is_bought>[0-1])', views.course, name="course"),
+    path('course/(?P<person_id>[0-9]+)/(?P<course_id>[0-9]+)', views.course_page, name="course"),
     path('mycourses/(?P<person_id>[0-9]+)', views.mycourses, name="mycourses"),
-    path('buy-course/', views.buy_course)
+    path('buy-course/(?P<person_id>[0-9]+)/(?P<course_id>[0-9]+)', views.buy_course, name="buycourse"),
+    path('reloadtable/', views.reload_table),
+    path('addcourse/(?P<person_id>[0-9]+)', views.add_course, name="addcourse"),
+    path('check-addcourse/(?P<person_id>[0-9]+)', views.check_add_course, name="check-addcourse"),
+    path('profile/(?P<person_id>[0-9]+)', views.profile, name="profile"),
+    path('add-comment/(?P<person_id>[0-9]+)/(?P<course_id>[0-9]+)', views.add_comment, name="add-comment"),
 ]

@@ -24,12 +24,11 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-       <ul class="navbar-nav mr-auto">
-            {% if personid == '0' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'signup' personid %}">Sign Up</a>
-            </li>
-            {% endif %}
+        <ul class="navbar-nav mr-auto">
+
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
+
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -54,34 +53,56 @@
 							{% endif %}
 				</div>
 				<div class="d-flex justify-content-center form_container">
-					<form action="/check-login/" method="post">
+					<form action="{% url 'check-addcourse' personid %}" method="post">
 
                         <div class="input-group mb-3">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-user"></i></span>
 							</div>
-							<input id="username" name="username" type="text"  class="form-control input_user" value="" placeholder="username">
+							<input id="title" name="title" type="text" class="form-control input_user" value="" placeholder="title">
 						</div>
 						<div class="input-group mb-2">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-key"></i></span>
 							</div>
-							<input id="password" name="password" type="password" class="form-control input_pass" value="" placeholder="password">
+							<input id="description" name="description" class="form-control input_pass" value="" placeholder="description">
 						</div>
-							<div class="d-flex justify-content-center mt-3 login_container">
-				 	<button type="submit" name="button" class="btn login_btn">Login</button>
+                        <div class="input-group mb-2">
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+							</div>
+							<input id="price" name="price" class="form-control input_pass" value="" placeholder="price">
+						</div>
+                        <div class="input-group mb-2">
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+							</div>
+							<input id="video_link" name="video_link" class="form-control input_pass" value="" placeholder="video link">
+						</div>
+                        <div class="input-group mb-2">
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+							</div>
+							<input id="category" name="category" class="form-control input_pass" value="" placeholder="category">
+						</div>
+                        <div class="input-group mb-2">
+							<div class="input-group-append">
+							</div>
+							<input id="lecturer_id" name="lecturer_id" class="form-control input_pass" value="{{ personid }}" style="display: none">
+						</div>
+                        <div class="input-group mb-2">
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+							</div>
+							<input id="thumbnail" name="thumbnail" class="form-control input_pass" value="" placeholder="thumbnail">
+						</div>
+
+                    <div class="d-flex justify-content-center mt-3">
+				 	<button type="submit" name="button" class="btn">Add Course</button>
 				   </div>
-
-
 </form>
 				</div>
 
-				<div class="mt-4">
-					<div class="d-flex justify-content-center links">
-						Don't have an account? <a href="/signup" class="ml-2">Sign Up</a>
-					</div>
-
-				</div>
 			</div>
 		</div>
 	</div>
