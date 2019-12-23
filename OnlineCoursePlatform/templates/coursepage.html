@@ -8,6 +8,7 @@
     <link href="{% static 'css/fontawesome.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/onlinecourseplatform.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/modal.css' %}" type="text/css" rel="stylesheet">
 
     <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
@@ -40,6 +41,10 @@
 
             {% if persontype == 'LEC' %}
                 <a class="nav-link" href="{% url 'addcourse' personid %}">Add Course</a>
+
+
+            {% else %}
+            <a class="nav-link" href="{% url 'myfavorites' personid %}">My Favorites</a>
             {% endif %}
             {% endif %}
         </ul>
@@ -50,6 +55,27 @@
     </div>
 </nav>
 
+<div id='reportModal' class="modal">
+
+        <div class="modal-content">
+        <div class="modal-header">
+                <label id="header" class="modal-label header">Submit Report</label>
+                <span class="close">&times;</span>
+        </div>
+        <form action="{% url 'report' personid course.0 %}"  method="post">
+        <div class="form-group row">
+                <label id="report_label" class="modal-label"></label>
+                <input id="report_description" name="report_description" class="modal-input" type="text" required>
+            </div>
+
+            <div class="modal-footer">
+                <button id="dataChange" class="btn change" type="submit">Submit</button>
+                <button class="btn close" >Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
 <div class="container h-100">
     <div class="d-flex justify-content-center h-100">
         <p>{{ course.1 }}</p>
@@ -59,18 +85,28 @@
             <label>Log in to buy this course!</label>
 
         {% else %}
+                {% if persontype == 'STU' %}
+                <button id="report" class="btn">Report Abuse</button>
+                <a href="{% url 'favorite' personid course.0 %}">Add to Favorite</a>
+
+                {% endif %}
+
+
             {% if bought == False  %}
                 <label>{{ course.3 }}</label>
                <a href="{% url 'buycourse' personid course.0 %}">Buy this course</a>
             {% endif %}
        {% endif %}
          <ul class="list-group" id="courseComments">
-       {% for comment in comments %}
-            <label>User Name {{ comment.0 }}</label>
-             <label>Comment Title {{ comment.2 }}</label>
-            <p>{{comment.1}}</p>
-             <label>Date : {{comment.3}}</label>
-       {% endfor %}
+
+             {% if comments is defined %}
+                   {% for comment in comments %}
+                        <label>User Name {{ comment.0 }}</label>
+                         <label>Comment Title {{ comment.2 }}</label>
+                        <p>{{comment.1}}</p>
+                         <label>Date : {{comment.3}}</label>
+                   {% endfor %}
+             {% endif %}
     </ul>
 
         {% if personid != '0' %}
@@ -91,12 +127,18 @@
 						</div>
 							<div class="d-flex justify-content-center mt-3 container">
 				 	<button type="submit" name="button" class="btn">Add Comment</button>
-				   </div>
+                            </div>
+                    </form>
+        </div>
         {% endif %}
 
         </div>
     </div>
 </div>
+
+
+
+
 </body>
 </html>
 

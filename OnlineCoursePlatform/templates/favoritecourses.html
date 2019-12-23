@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <title>Online Course Platform</title>
     {% load static %}
+
     <link href="{% static 'css/login-signup.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'css/fontawesome.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+	<link href="{% static 'css/fontawesome.css' %}" type="text/css" rel="stylesheet">
+	<link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/onlinecourseplatform.css' %}" type="text/css" rel="stylesheet">
 
     <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/jquery-ui.js' %}" type="text/javascript" charset="utf-8"></script>
+
 
 </head>
 
@@ -19,34 +20,18 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{% url 'home' personid %}">Home</a>
-
-    {% if personid != '0' %}
-    <label>Hello {{ personname }}</label>
-    {% endif %}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            {% if personid == '0' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'signup' personid %}">Sign Up</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' personid %}">Login</a>
-            </li>
-            {% else %}
+<ul class="navbar-nav mr-auto">
+
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-            <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
             <a class="nav-link" href="{% url 'profile' personid %}">Profile</a>
-            {% if persontype == 'LEC' %}
-                <a class="nav-link" href="{% url 'addcourse' personid %}">Add Course</a>
-            {% else %}
-            <a class="nav-link" href="{% url 'myfavorites' personid %}">My Favorites</a>
-            {% endif %}
-            {% endif %}
+            <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
+
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -54,23 +39,23 @@
         </form>
     </div>
 </nav>
-<div class="d-flex justify-content-center h-100">
-<img src="https://cdn01.alison-static.net/courses/1300/alison_courseware_intro_1300.jpg">
-</div>
 
+<input type="text" id="personid" class="hidden" value="{{personid}}">
 <div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 
    <ul class="list-group" id="myCoursesList">
-
-       {% for course in courses %}
+       <label id="noCourse" class="hidden">You have no any purchased courses!</label>
+        {% for course in courses %}
             <label>Category {{ course.5 }}</label>
            <a id="{{course.0}}" href="{% url 'course' personid course.0 %}">{{course.1}}</a><img class="thumbnail" src="{{course.7}}"><p>{{course.2}}</p>
-       <label>Lecturer {{ course.6 }}</label>
+
        {% endfor %}
+
     </ul>
 </div>
 </div>
 
 </body>
 </html>
+

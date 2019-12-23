@@ -28,3 +28,9 @@ def insert_db(query):
     cursor      = db.connection()
     querycursor = Query(cursor)
     return querycursor.insert(query)
+
+def call_proc(query):
+    db = open_connection_to_db()
+    cursor = db.connection()
+    querycursor = Query(cursor)
+    return querycursor.callproc(query)

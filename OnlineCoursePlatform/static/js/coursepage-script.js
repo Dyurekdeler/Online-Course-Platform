@@ -15,4 +15,11 @@ $(document).ready(function(){
 
     });
 
+    $('#report').on('click', function(){
+        $("#reportModal").css("display", "block");
+    });
+    $('.close').on('click', function(){
+        $("#reportModal").css("display", "none");
+    });
+
 });

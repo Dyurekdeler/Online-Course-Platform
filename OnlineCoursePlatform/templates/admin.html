@@ -24,10 +24,11 @@
 
         <div class="modal-content">
         <div class="modal-header">
-                <label id="header" class="modal-label header"></label>
+                <label id="header" class="modal-label header" style="display:none"></label>
                 <span class="close" onclick="closeModal('editModal')">&times;</span>
         </div>
-
+                <input id="inputid" class="modal-input" style="display:none" value="">
+                <input id="inputintent" class="modal-input" style="display:none" value="">
         <div class="form-group row">
                 <label id="label1" class="modal-label"></label>
                 <input id="input1" class="modal-input" type="text" name="newvalue" required>
@@ -36,10 +37,31 @@
                 <label id="label2" class="modal-label"></label>
                 <input id="input2" class="modal-input" type="text" name="newvalue" required>
             </div>
-                <div class="form-group row">
+            <div class="form-group row">
                 <label id="label3" class="modal-label"></label>
                 <input id="input3" class="modal-input" type="text" name="newvalue" required>
             </div>
+                <div class="form-group row">
+                <label id="label4" class="modal-label"></label>
+                <input id="input4" class="modal-input" type="text" name="newvalue" required>
+            </div>
+            <div class="form-group row">
+                <label id="label5" class="modal-label"></label>
+                <input id="input5" class="modal-input" type="text" name="newvalue" required>
+            </div>
+            <div class="form-group row">
+                <label id="label6" class="modal-label"></label>
+                <input id="input6" class="modal-input" type="text" name="newvalue" required>
+            </div>
+            <div class="form-group row">
+                <label id="label7" class="modal-label"></label>
+                <input id="input7" class="modal-input" type="text" name="newvalue" required>
+            </div>
+            <div class="form-group row">
+                <label id="label8" class="modal-label"></label>
+                <input id="input8" class="modal-input" type="text" name="newvalue" required>
+            </div>
+
             <div class="modal-footer">
                 <button id="dataChange" class="btn change" type="submit">Change</button>
                 <button class="btn-close" onclick="closeModal('editModal')">Close</button>
@@ -51,17 +73,17 @@
 
     <div class="container h-100">
     <div class="d-flex justify-content-center h-100">
-        <div id="maintanence-panel" class="panel-body">
+        <div id="admin-panel" class="panel-body">
             <div>
                 <p>
-                    <a class="btn btn-primary" data-toggle="collapse" href="#collapsecountry" role="button"
-                        aria-expanded="false" aria-controls="collapsecountry" style=" width:100%; text-align:left;">
+                    <a class="btn btn-primary" data-toggle="collapse" href="#personcollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
                         <b>People</b>
                     </a>
                 </p>
             </div>
             
-            <div class="collapse" id="collapsecountry">
+            <div class="collapse" id="personcollapse">
                 <div class="card card-body">
 
                     <button type="button" class="btn edit" disabled="true">
@@ -71,13 +93,13 @@
                         <span class="glyphicon glyphicon-trash"></span> Remove
                     </button>
                     <button type="button" name="countrylist" class="btn add">
-                        <span class="glyphicon glyphicon-plus"></span> Add New Country
+                        <span class="glyphicon glyphicon-plus"></span> Add New Person
                     </button>
 
                     <table id="personlist" class="datatable display" width="100%">
                         <thead>
                             <tr>
-                                <th>Person ID</th>
+                                <th>ID</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Email</th>
@@ -93,8 +115,262 @@
                 </div>
             </div>
 
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#unicollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Universities</b>
+                    </a>
+                </p>
             </div>
+
+            <div class="collapse" id="unicollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New University
+                    </button>
+
+                    <table id="unilist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Location</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#studentcollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Students</b>
+                    </a>
+                </p>
+            </div>
+
+            <div class="collapse" id="studentcollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Student
+                    </button>
+
+                    <table id="studentlist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>University ID</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#lecturercollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Lecturers</b>
+                    </a>
+                </p>
+            </div>
+
+            <div class="collapse" id="lecturercollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Lecturer
+                    </button>
+
+                    <table id="lecturerlist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>University ID</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#coursecollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Courses</b>
+                    </a>
+                </p>
+            </div>
+
+            <div class="collapse" id="coursecollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Course
+                    </button>
+
+                    <table id="courselist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Video Link</th>
+                                <th>Category</th>
+                                <th>Lecturer ID</th>
+                                <th>Thumbnail</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#commentcollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Comments</b>
+                    </a>
+                </p>
+            </div>
+
+            <div class="collapse" id="commentcollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Comment
+                    </button>
+
+                    <table id="commentlist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Person ID</th>
+                                <th>Description</th>
+                                <th>Title</th>
+                                <th>Password</th>
+                                <th>Course ID</th>
+                                <th>Post Date</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+
+        <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#reportcollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Reports</b>
+                    </a>
+                </p>
+            </div>
+
+            <div class="collapse" id="reportcollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Report
+                    </button>
+
+                    <table id="reportlist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student ID</th>
+                                <th>Description</th>
+                                <th>Course ID</th>
+                                <th>Report Date</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+            <div>
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#ordercollapse" role="button"
+                        aria-expanded="false" style=" width:100%; text-align:left;">
+                        <b>Orders</b>
+                    </a>
+                </p>
+            </div>
+
+            <div class="collapse" id="ordercollapse">
+                <div class="card card-body">
+
+                    <button type="button" class="btn edit" disabled="true">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </button>
+                    <button type="button" class="btn remove" disabled="true">
+                        <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                    <button type="button" name="countrylist" class="btn add">
+                        <span class="glyphicon glyphicon-plus"></span> Add New Order
+                    </button>
+
+                    <table id="orderlist" class="datatable display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student ID</th>
+                                <th>Course ID</th>
+                                <th>Date</th>
+
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+
         </div>
+    </div>
 </div>
 </body>
 

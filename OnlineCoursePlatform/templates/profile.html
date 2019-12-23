@@ -10,6 +10,7 @@
     <script src="{% static 'js/jquery.min.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/jquery.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/profile-script.js' %}" type="text/javascript" charset="utf-8"></script>
 </head>
 
 <body>
@@ -24,7 +25,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-            <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
+
+
+                <a class="nav-link" href="{% url 'mycourses' personid %}">My Courses</a>
+
+            {% if persontype == 'STU' %}
+                <a class="nav-link" href="{% url 'myfavorites' personid %}">My Favorites</a>
+            {% endif %}
 
             {% if persontype == 'LEC' %}
                 <a class="nav-link" href="{% url 'addcourse' personid %}">Add Course</a>
@@ -43,7 +50,7 @@
         <h4 class="card-title mt-3 text-center">Welcome {{ firstname }}</h4>
         <p class="text-center">Get started with your account</p>
 
-        <form action="/update-account/" method="post">
+        <form action="{% url 'update-acc' personid %}" method="post">
             {% csrf_token %}
             <input id="personid" type="text" name="personid" value=" {{personid}}" style="display: none"/>
             <div class="form-group input-group">
@@ -75,13 +82,18 @@
                 <input id="phone" name="phone" class="form-control" value="{{ phone }}" type="text" required>
             </div> <!-- form-group// -->
 
-            <div class="form-group input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
-                </div>
-                <input id="university" name="university" class="form-control" value=" {{ university }}" type="text"
-                       required>
-            </div> <!-- form-group// -->
+             <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+		</div>
+    	<input id="university" name="university" class="form-control" placeholder="University"  value=" {{ university }}" type="text" style="display: None" REQUIRED>
+			 <select id="uni-selection" class="custom-select">
+				 {% for uni in universities %}
+                	<option value="{{ uni.0 }}">{{ uni.1 }}</option>
+       			{% endfor %}
+
+    </select>
+    </div> <!-- form-group// -->
 
             <div class="form-group input-group">
                 <div class="input-group-prepend">
@@ -97,31 +109,26 @@
                 <input id="address" name="address" class="form-control" value=" {{ address }}" type="text" required>
             </div> <!-- form-group// -->
 
-
-            <div class="form-group input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                </div>
-                <input id="pw1" name="pw1" class="form-control" placeholder="Old password" type="password" required>
-            </div> <!-- form-group// -->
-            <div class="form-group input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                </div>
-                <input id="pw2" name="pw2" class="form-control" placeholder="Repeat password" type="password" required>
-            </div> <!-- form-group// -->
             <div class="form-group">
                 <button id="update-btn" type="submit" class="btn btn-primary btn-block"> Update Account</button>
 
             </div> <!-- form-group// -->
         </form>
-        <form action="/delete-account/" method="post">
+
+
+        <form action="{% url 'change-pw' personid %}" method="post">
             {% csrf_token %}
-            <input id="del-personid" type="text" name="personid" value=" {{personid}}" style="display: none"/>
-            <button id="delete-btn" type="submit" class="btn btn-primary btn-block"> Delete Account</button>
+
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                    </div>
+                    <input id="pw2" name="pw2" class="form-control" placeholder="New Password" type="password" required>
+                </div> <!-- form-group// -->
+            <button type="submit" class="btn btn-primary btn-block">Change Password</button>
         </form>
 
-
+        <a class="btn" href="{% url 'delete-acc' personid %}">Delete Account</a>
     </article>
 </div> <!-- card.// -->
 </div>
