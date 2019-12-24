@@ -113,17 +113,17 @@
          <ul class="list-group" id="courseComments">
 
              <div class="comment-general">
-             {% if comments is defined %}
+
                    {% for comment in comments %}
                             <div class="comment-specific">
-                        <label>User Name {{ comment.0 }}</label>
-                         <label>Comment Title {{ comment.2 }}</label>
+                        <label>User Name : {{ comment.0 }}</label><br>
+                         <label>Title : {{ comment.2 }}</label>
                         <p>{{comment.1}}</p>
                          <label>Date : {{comment.3}}</label>
                             </div>
                    {% endfor %}
                  </div>
-             {% endif %}
+
     </ul>
 
         {% if personid != '0' %}
@@ -135,13 +135,13 @@
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-user"></i></span>
 							</div>
-							<input id="title" name="title" type="text"  class="form-control input_user" value="" placeholder="title">
+							<input id="title" name="title" type="text"  class="form-control" value="" placeholder="title">
 						</div>
 						<div class="input-group mb-2">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-key"></i></span>
 							</div>
-							<input id="description" name="description"class="form-control input_pass" value="" placeholder="description">
+							<input id="description" name="description"class="form-control large" value="" placeholder="description">
 						</div>
 							<div class="d-flex justify-content-center mt-3 container">
 				 	<button type="submit" name="button" class="btn">Add Comment</button>
@@ -150,7 +150,6 @@
         </div>
         </div>
         {% endif %}
-
         </div>
     </div>
 </div>

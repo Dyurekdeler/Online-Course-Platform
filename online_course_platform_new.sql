@@ -95,6 +95,19 @@ CREATE TABLE tbl_logs(
 	admin_id INT NOT NULL REFERENCES tbl_supervisor(supervisor_id),
 	sql_operation TEXT NOT NULL 
 );
+
+CREATE OR REPLACE PROCEDURE add_log(date timestamp, adminid integer, sqlop text)
+LANGUAGE 'plpgsql'
+
+AS $$
+BEGIN
+
+INSERT INTO tbl_logs (log_date, admin_id, sql_operation) VALUES (date, adminid, sqlop);
+
+    COMMIT;
+END;
+$$;
+
 CREATE OR REPLACE PROCEDURE add_person(
 	firstname text,
 	lastname text,
@@ -134,6 +147,23 @@ END IF;
 END;
 $$;
 
+CREATE OR REPLACE VIEW students_and_unis AS
+SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, U.university_id, university_name
+FROM tbl_person P
+INNER JOIN tbl_student S
+ON S.student_id = P.person_id
+INNER JOIN tbl_university U
+ON S.university_id = U.university_id
+
+CREATE OR REPLACE VIEW lecturers_and_unis AS
+SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, U.university_id, university_name
+FROM tbl_person P
+INNER JOIN tbl_lecturer L
+ON L.lecturer_id = P.person_id
+INNER JOIN tbl_university U
+ON L.university_id = U.university_id
+
+
 INSERT INTO public.tbl_university(university_name, university_location)
 	VALUES ('Dokuz Eylül Üniversitesi', 'İzmir'),
 	('Ege Üniversitesi', 'İzmir');
@@ -172,3 +202,16 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nisakko;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO nisakko;
 
 select pg_terminate_backend(pid) from pg_stat_activity where datname='Online_Course_Platform'
+
+
+
+SELECT tbl_course.course_id,  count(comment_id) FROM tbl_course 
+LEFT OUTER JOIN tbl_comment 
+ON tbl_course.course_id = tbl_comment.course_id 
+GROUP BY tbl_course.course_id 
+
+SELECT tbl_course.course_id,  count(comment_id) FROM tbl_course 
+LEFT OUTER JOIN tbl_comment 
+ON tbl_course.course_id = tbl_comment.course_id 
+WHERE tbl_course.course_id = 2
+GROUP BY tbl_course.course_id 

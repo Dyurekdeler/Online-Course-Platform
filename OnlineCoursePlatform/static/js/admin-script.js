@@ -12,7 +12,7 @@ $(document).ready(function () {
                 activeRow = null;
             }
             else {
-            var lists = ['personlist', 'unilist', 'studentlist', 'lecturerlist', 'courselist', 'commentlist', 'reportlist']
+            var lists = ['personlist', 'unilist', 'courselist', 'commentlist', 'reportlist']
                 for(var i=0; i<lists.length; i++){
                     var tableid = '#'+lists[i];
                     $(tableid).DataTable().$('tr.selected').removeClass('selected');
@@ -50,8 +50,9 @@ $(document).ready(function () {
             var newvalue6 = $('#input6').val();
             var newvalue7 = $('#input7').val();
             var newvalue8 = $('#input8').val();
-            post_data(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, tableid, intent);
+            var newvalue9 = $('#input9').val();
 
+            post_data(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, newvalue9, tableid, intent);
         });
 
 });
@@ -133,48 +134,6 @@ function initialize_tables() {
         ]
     });
 
-    var studentlist = $('#studentlist').DataTable({
-        "ajax": {
-            "processing": true,
-            "url": "/reloadtable/",
-            "data": { 'table_id': JSON.stringify('student') },
-            "dataType": "json",
-            "dataSrc": ""
-        },
-
-        "iDisplayLength": 25,
-        "columns": [
-            {
-                "name": "ID",
-
-            },
-            {
-                "name": "Univeristy ID",
-
-            },
-        ]
-    });
-    var lecturerlist = $('#lecturerlist').DataTable({
-        "ajax": {
-            "processing": true,
-            "url": "/reloadtable/",
-            "data": { 'table_id': JSON.stringify('lecturer') },
-            "dataType": "json",
-            "dataSrc": ""
-        },
-
-        "iDisplayLength": 25,
-        "columns": [
-            {
-                "name": "ID",
-
-            },
-            {
-                "name": "University ID",
-
-            },
-        ]
-    });
     var courselist = $('#courselist').DataTable({
         "ajax": {
             "processing": true,
@@ -358,6 +317,10 @@ function initialize_tables() {
 function auto_fill_modal(activeRow, table_id,  action) {
     //automatically hides unneccessary elements and renames the rest according to the table
     $('.modal-input').css('display','block');
+    $('#header').css('display','none');
+    $('#inputid').css('display','none');
+    $('#inputintent').css('display','none');
+
     $('.modal-label').css('display','block');
     $('.modal-input').val("");
 
@@ -370,69 +333,46 @@ function auto_fill_modal(activeRow, table_id,  action) {
     switch (table_id) {
         case 'personlist':
             $('#header').val('person');
-            var person = ['ID','First Name','Last Name', 'Email','Password','Birthdate','Address','Phone','Person Type']
-            for(var i=1; i<9; i++){
+            var person = ['First Name','Last Name', 'Email','Password','Birthdate','Address','Phone','Person Type','University Name']
+            for(var i=1; i<10; i++){
             var labelid='#label'+i;
             $(labelid).text(person[i-1]);
             if(action=='edit'){
             var inputid='#input'+i;
-            $(inputid).val(table_row[i-1]);
+            $(inputid).val(table_row[i]);
             }
 
             }
             break;
         case 'unilist':
             $('#header').val('university');
-            var uni = ['ID','Name','Location']
-            for(var i=1; i<4; i++){
+            var uni = ['Name','Location']
+            for(var i=1; i<3; i++){
                 var labelid='#label'+i;
                 $(labelid).text(uni[i-1]);
                 if(action=='edit'){
                 var inputid='#input'+i;
-                $(inputid).val(table_row[i-1]);
+                $(inputid).val(table_row[i]);
                 }
             }
         break;
-        case 'studentlist':
-        $('#header').val('student');
-        var stu = ['ID','University ID']
-            for(var i=1; i<3; i++){
-            var labelid='#label'+i;
-                $(labelid).text(stu[i-1]);
-                if(action=='edit'){
-                var inputid='#input'+i;
-                $(inputid).val(table_row[i-1]);
-                }
-            }
-            break;
-        case 'lecturerlist':
-            $('#header').val('lecturer');
-            var lect = ['ID','University ID']
-            for(var i=1; i<3; i++){
-            var labelid='#label'+i;
-                $(labelid).text(lect[i-1]);
-                if(action=='edit'){
-                var inputid='#input'+i;
-                $(inputid).val(table_row[i-1]);
-                }
-            }
-        break;
+
         case 'courselist':
         $('#header').val('course');
-        var course = ['ID','Title', 'Description', 'Price', 'Video Link', 'Category', 'Lecturer ID', 'Thumbnail']
-            for(var i=1; i<8; i++){
+        var course = ['Title', 'Description', 'Price', 'Video Link', 'Category', 'Lecturer ID', 'Thumbnail']
+            for(var i=1; i<7; i++){
             var labelid='#label'+i;
                 $(labelid).text(course[i-1]);
                 if(action=='edit'){
                 var inputid='#input'+i;
-                $(inputid).val(table_row[i-1]);
+                $(inputid).val(table_row[i]);
                 }
             }
             break;
         case 'commentlist':
         $('#header').val('comment');
-        var comment = ['ID',  'Person ID', 'Description', 'Title', 'Course ID', 'Post Date']
-            for(var i=1; i<7; i++){
+        var comment = ['Person ID', 'Description', 'Title', 'Course ID', 'Post Date']
+            for(var i=1; i<6; i++){
 
             var labelid='#label'+i;
                 $(labelid).text(comment[i-1]);
@@ -445,31 +385,31 @@ function auto_fill_modal(activeRow, table_id,  action) {
 
         case 'reportlist':
         $('#header').val('report');
-        var report = ['ID',  'Student ID', 'Description', 'Course ID', 'Report Date']
-            for(var i=1; i<6; i++){
+        var report = ['Student ID', 'Description', 'Course ID', 'Report Date']
+            for(var i=1; i<5; i++){
             var labelid='#label'+i;
                 $(labelid).text(report[i-1]);
                 if(action=='edit'){
                 var inputid='#input'+i;
-                $(inputid).val(table_row[i-1]);
+                $(inputid).val(table_row[i]);
                 }
             }
             break;
         case 'orderlist':
         $('#header').val('order');
-        var order = ['ID',  'Student ID', 'Course ID', 'Order Date']
-            for(var i=1; i<5; i++){
+        var order = ['Student ID', 'Course ID', 'Order Date']
+            for(var i=1; i<4; i++){
             var labelid='#label'+i;
                 $(labelid).text(order[i-1]);
                 if(action=='edit'){
                 var inputid='#input'+i;
-                $(inputid).val(table_row[i-1]);
+                $(inputid).val(table_row[i]);
                 }
             }
             break;
     }
     //after auto filling inputs, hide extra input and label elements
-    for(i ; i<9; i++){
+    for(i ; i<10; i++){
                 var labelid='#label'+i;
                 var inputid='#input'+i;
                 $(labelid).css('display','none');
@@ -477,13 +417,12 @@ function auto_fill_modal(activeRow, table_id,  action) {
     }
 }
 
-
  function closeModal(modalid){
      var jquery_tableid = '#'+modalid;
      $(jquery_tableid).css('display','none');
  }
 
- function post_data(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, tableid, intent) {
+ function post_data(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, newvalue9, tableid, intent) {
     // id == -999 represents DB will assign auto-incremental id
     $.ajax({
         type: "POST",
@@ -500,6 +439,8 @@ function auto_fill_modal(activeRow, table_id,  action) {
             'newvalue6': JSON.stringify(newvalue6),
             'newvalue7': JSON.stringify(newvalue7),
             'newvalue8': JSON.stringify(newvalue8),
+            'newvalue9': JSON.stringify(newvalue9),
+
         },
         dataType: "json",
     }).done(function (response) {
@@ -509,7 +450,7 @@ function auto_fill_modal(activeRow, table_id,  action) {
         }
         else
             alert(response['response']);
-        enable_btn();
+            enable_btn();
     });
 }
 

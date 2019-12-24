@@ -9,19 +9,44 @@
 }
 
 .comment-general{
+border-radius:10px;
 background-color: lightblue;
 }
 .comment-specific{
-background-color: darkblue;
+margin-top:5%;
+margin-bottom:3%;
+border-radius:10px;
+background-color: #B9B7EE;
 }
 .add-comment{
-background-color: yellow;
+border-radius:10px;
+background-color: #B7EEC2;
 }
 
 .h-100{
-margin-top:10%;
+margin-top:8%;
 }
 
 .description{
-background-color: pink;
+background-color: #B7EEEB;
+border-radius:10px;
+}
+
+.course-bundle{
+width:100%;
+margin-top:10%;
+background-color: #EDEEB7;
+border-radius:10px;
+}
+
+.add-comment{
+width:100%;
+}
+
+.large{
+height:200px;
+}
+
+.wide{
+width:400px;
 }

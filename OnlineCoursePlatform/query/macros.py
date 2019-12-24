@@ -2,11 +2,28 @@
 GET_ALL_COURSES = ''' SELECT * FROM tbl_course order by course_id ; '''
 GET_ALL_UNIS = ''' SELECT * FROM tbl_university order by university_id ; '''
 GET_ALL_PEOPLE = ''' SELECT * FROM tbl_person order by person_id ; '''
-GET_ALL_STUDENTS = ''' SELECT * FROM tbl_student order by student_id ; '''
-GET_ALL_LECTURERS = ''' SELECT * FROM tbl_lecturer order by lecturer_id ; '''
+GET_ALL_STUDENTS = ''' SELECT * FROM students_and_unis order by student_id ; '''
+GET_ALL_LECTURERS = ''' SELECT * FROM lecturers_and_unis order by lecturer_id ; '''
 GET_ALL_COMMENTS = ''' SELECT * FROM tbl_comment order by comment_id ; '''
 GET_ALL_REPORTS = ''' SELECT * FROM tbl_report order by report_id ; '''
 GET_ALL_ORDERS = ''' SELECT * FROM tbl_order order by order_id ; '''
+
+
+def add_person(firstname, lastname, email,pwd,bday,address,phone, uni, type):
+    return ''' CALL add_person('%s', '%s', '%s', '%s','%s', '%s', '%s','%s' ,'%s'); ''' %(firstname, lastname, email,pwd,bday,address,phone, uni, type)
+
+def update_person(personid, firstname, lastname, email, pw, bday, address, phone,  uni):
+    return ''' BEGIN; UPDATE tbl_person SET first_name = '%s', last_name = '%s', email= '%s', password = '%s', date_of_birth= '%s', address= '%s', phone= '%s' WHERE person_id = '%s' ; 
+     UPDATE tbl_student SET university_id = '%s' WHERE person_id = '%s'; COMMIT; ''' %( firstname, lastname, email,pw,bday,address,phone,personid, uni, personid)
+
+def get_comment_counts(courseid):
+    return ''' SELECT tbl_course.course_id,  count(comment_id) FROM tbl_course 
+LEFT OUTER JOIN tbl_comment 
+ON tbl_course.course_id = tbl_comment.course_id 
+WHERE tbl_course.course_id = '%s'
+GROUP BY tbl_course.course_id  ''' %(courseid)
+
+
 
 def remove_by_id(rowid, tablename):
     return ''' DELETE FROM %s WHERE id = '%s' ; ''' %(tablename, rowid)
@@ -17,8 +34,6 @@ def get_user_by_id(personid):
 def get_user(username, password):
     return ''' SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, person_type FROM tbl_person WHERE email = '%s' AND password = '%s' ; ''' %(username, password)
 
-def update_person(personid, firstname, lastname, email, address, phone, bday, uni):
-    return ''' UPDATE tbl_person SET first_name = '%s', last_name = '%s', email= '%s', university_id= '%s', date_of_birth= '%s', address= '%s', phone= '%s' WHERE person_id = '%s' ; ''' %( firstname, lastname, email,uni,bday,address,phone,personid)
 
 def update_student(studentid, universityid):
     return ''' UPDATE tbl_student SET university_id = '%s' WHERE student_id = '%s' ; ''' %(universityid, studentid)
@@ -29,8 +44,6 @@ def delete_person(personid):
 def delete_student(personid):
     return ''' DELETE FROM tbl_student WHERE student_id = '%s' ; ''' %(personid)
 
-def add_person(firstname, lastname, email,pwd,bday,address,phone, uni, type):
-    return ''' CALL add_person('%s', '%s', '%s', '%s','%s', '%s', '%s','%s' ,'%s'); ''' %(firstname, lastname, email,pwd,bday,address,phone, uni, type)
 
 def get_ordered_courses(studentid):
     return ''' SELECT * FROM tbl_course WHERE course_id IN (SELECT course_id FROM tbl_order WHERE student_id = '%s') ; ''' %(studentid)

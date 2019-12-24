@@ -67,18 +67,59 @@ def add_course(request, person_id):
 
 @csrf_exempt
 def course_page(request,person_id,course_id):
+    sent_comments = None
+    sent_is_bought = False
     course = CONT.get_from_db(MACRO.get_course(course_id))  # retrieve query set from db
-    user = CONT.get_from_db(MACRO.get_user_type(person_id))
-    is_bought = False
-    if (course[0] == 'SUCCESS' and len(course[1])>0) and (user[0] == 'SUCCESS' and len(user[1])>0):
-        order = CONT.get_from_db(MACRO.get_bought_course(course_id, person_id))
-        if order[0] == 'SUCCESS' and len(order[1][0]) > 0:
-            is_bought = True
-            comments = CONT.get_from_db(MACRO.get_course_comments(course_id))
-            if comments[0] == 'SUCCESS' and len(comments[1])>0:
-                return render(request, "coursepage.html", {'course':course[1][0], 'comments':comments[1], 'personid':person_id, 'persontype':user[1][0][1], 'bought':is_bought})
+    if (course[0] == 'SUCCESS' and len(course[1]) > 0):
+        cmnt_counts = CONT.get_from_db(MACRO.get_comment_counts(course_id))
+        if cmnt_counts[0] == 'SUCCESS' and len(cmnt_counts[1][0]) > 0:
+            if cmnt_counts[1][0][1]>0:
+                comments = CONT.get_from_db(MACRO.get_course_comments(course_id))
+                if comments[0] == 'SUCCESS' and len(comments[1][0]) > 0:
+                    sent_comments = comments[1]
+                else:
+                    #exit comment count is bigger than 0 but comment does not exits
+                    return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
             else:
-                return render(request, "coursepage.html",{'course': course[1][0],  'personid': person_id,'persontype': user[1][0][1], 'bought': is_bought})
+                #comment 0 dan azdır commentsiz gönder
+                sent_comments = None
+        else:
+            #exit comment count could not reached
+            return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
+        if person_id != '0':
+            user = CONT.get_from_db(MACRO.get_user_type(person_id))
+            if user[0] == 'SUCCESS' and len(user[1][0]) > 0:
+                order = CONT.get_from_db(MACRO.get_bought_course(course_id, person_id))
+                if order[0] == 'SUCCESS' and len(order[1][0]) > 0:
+                    sent_is_bought = True
+                else:
+                    sent_is_bought = False
+                if sent_comments is not None:
+                    return render(request, "coursepage.html",
+                                  {'course': course[1][0], 'comments': sent_comments[1], 'personid': person_id,
+                                   'persontype': user[1][0][1], 'bought': sent_is_bought})
+                else:
+                    return render(request, "coursepage.html",
+                                  {'course': course[1][0], 'personid': person_id,
+                                   'persontype': user[1][0][1], 'bought': sent_is_bought})
+            else:
+                #exit useer not found
+                return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
+        else:
+            if sent_comments is not None:
+                return render(request, "coursepage.html",
+                              {'course': course[1][0], 'comments': sent_comments[1], 'personid': person_id,
+                               'persontype': 'guest'})
+            else:
+                return render(request, "coursepage.html",
+                              {'course': course[1][0],  'personid': person_id,
+                               'persontype': 'guest'})
+
+
+    else:
+        #exit course not found
+        return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
+
     return redirect(reverse('home', kwargs={'person_id': person_id})) #when there is no course
 
 def profile(request, person_id):
@@ -143,7 +184,6 @@ def check_signup(request):
                 try:
                     if person_type == 'STU':
                         student = Student(firstname, lastname, email, address, password1, bday, phone, university)
-
                         CONT.call_proc(MACRO.add_person(student.firstname,student.lastname,student.email,student.password,student.bday,student.address,student.phone, student.universityId,person_type))
                     elif person_type == 'LEC':
                         lecturer = Lecturer(firstname, lastname, email, address, password1, bday, phone, university)
@@ -286,6 +326,7 @@ def process_data(request):
     newvalue6 = (request.POST.get('newvalue6', False))
     newvalue7 = (request.POST.get('newvalue7', False))
     newvalue8 = (request.POST.get('newvalue8', False))
+    newvalue9 = (request.POST.get('newvalue9', False))
 
 
     if newvalue1 != None:
@@ -304,19 +345,13 @@ def process_data(request):
         newvalue7 = newvalue7.strip('/"')
     if newvalue8 != None:
         newvalue8 = newvalue8.strip('/"')
+    if newvalue9 != None:
+        newvalue9 = newvalue8.strip('/"')
 
     if table_id == 'person':
-        query = MACRO.add_person(newvalue1, newvalue2, newvalue3)
+        query = MACRO.add_person(newvalue1, newvalue2, newvalue3,newvalue4, newvalue5, newvalue6, newvalue7, newvalue8,  newvalue9)
         if intent == 'edit':
-            query = MACRO.update_country(data_id, newvalue1, newvalue2, newvalue3)
-    elif table_id == 'student':
-        query = MACRO.add_device(newvalue1, newvalue2)
-        if intent == 'edit':
-            query = MACRO.update_device(data_id, newvalue1, newvalue2)
-    elif table_id == 'lecturer':
-        query = MACRO.add_brand(newvalue1)
-        if intent == 'edit':
-            query = MACRO.update_brand(data_id, newvalue1)
+            query = MACRO.update_person(data_id, newvalue1, newvalue2, newvalue3)
     elif table_id == 'university':
         query = MACRO.add_clicksrc(newvalue1, newvalue2)
         if intent == 'edit':
