@@ -15,7 +15,7 @@ CREATE TABLE tbl_person (
 CREATE TABLE tbl_university (
 	university_id SERIAL PRIMARY KEY,
 	university_name TEXT NOT NULL UNIQUE,
-	university_location TEXT NOT NULL,
+	university_location TEXT NOT NULL
 );
 
 CREATE TABLE tbl_student(
@@ -92,24 +92,22 @@ CREATE TABLE tbl_favorites (
 CREATE TABLE tbl_logs(
 	log_id SERIAL PRIMARY KEY,
 	log_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	admin_id INT NOT NULL,
-	sql_operation TEXT NOT NULL,
-	CONSTRAINT "fk_adminId" FOREIGN KEY("supervisor_id") REFERENCES public."tbl_supervisor"(supervisor_id),
+	admin_id INT NOT NULL REFERENCES tbl_supervisor(supervisor_id),
+	sql_operation TEXT NOT NULL 
 );
-
-CREATE OR REPLACE PROCEDURE public.add_person(
+CREATE OR REPLACE PROCEDURE add_person(
 	firstname text,
 	lastname text,
 	email text,
 	password text,
 	bday timestamp without time zone,
 	address text,
-	phone character varying,
+	phone varchar(11),
 	uniid integer,
-	person_type character varying)
+	person_type varchar(3))
 LANGUAGE 'plpgsql'
 
-AS $BODY$
+AS $$
 BEGIN
 
 IF person_type = 'STU' THEN
@@ -134,16 +132,15 @@ END IF;
  
     COMMIT;
 END;
-$BODY$;
-
+$$;
 
 INSERT INTO public.tbl_university(university_name, university_location)
 	VALUES ('Dokuz Eylül Üniversitesi', 'İzmir'),
 	('Ege Üniversitesi', 'İzmir');
 
 
-CALL Add_Person('Deniz','Yürekdeler','dyurekdeler@live.com',12345678,'01.01.1970','izmir','0554413061','STU');
-CALL Add_Person('Semih','Utku','semihutku@mail.com',12345678,'01.01.1970','izmir','0554413061','LEC');
+CALL add_person('Deniz','Yürekdeler','dyurekdeler@live.com',12345678,'01.01.1970','izmir','0554413061','STU');
+CALL add_person('Semih','Utku','semihutku@mail.com',12345678,'01.01.1970','izmir','0554413061','LEC');
 
 INSERT INTO public.tbl_course(
 	title, description, price, video_link, category, lecturer_id, thumbnail)
@@ -156,6 +153,22 @@ INSERT INTO public.tbl_order(
 	VALUES (1,1,'12.05.2010'),
 	(1,2,'15.05.2010');
 
+INSERT INTO public.tbl_comment(
+	student_id, description, title, course_id, post_date)
+	VALUES (1,'This course is very helpful', 'Nice Course', 1, '24.12.2019'),
+	(1,'Teacher is fluent in English', 'Understanding', 1, '29.12.2019');
+
+INSERT INTO public.tbl_favorites(
+	student_id, course_id)
+	VALUES (1,1);
+
+INSERT INTO public.tbl_report(
+	report_id, student_id, description, course_id, report_date)
+	VALUES (1,'It is not teaching what the title says',2,'05.05.2018');
+
+
 CREATE USER nisakko WITH PASSWORD '123456';
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nisakko;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO nisakko;
+
+select pg_terminate_backend(pid) from pg_stat_activity where datname='Online_Course_Platform'

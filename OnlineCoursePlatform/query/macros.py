@@ -30,7 +30,7 @@ def delete_student(personid):
     return ''' DELETE FROM tbl_student WHERE student_id = '%s' ; ''' %(personid)
 
 def add_person(firstname, lastname, email,pwd,bday,address,phone, uni, type):
-    return ''' CALL Add_Person('%s', '%s', '%s', '%s','%s', '%s', '%s','%s' ,'%s'); ''' %(firstname, lastname, email,pwd,bday,address,phone, uni, type)
+    return ''' CALL add_person('%s', '%s', '%s', '%s','%s', '%s', '%s','%s' ,'%s'); ''' %(firstname, lastname, email,pwd,bday,address,phone, uni, type)
 
 def get_ordered_courses(studentid):
     return ''' SELECT * FROM tbl_course WHERE course_id IN (SELECT course_id FROM tbl_order WHERE student_id = '%s') ; ''' %(studentid)

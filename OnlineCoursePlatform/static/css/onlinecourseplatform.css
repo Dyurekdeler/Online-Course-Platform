@@ -7,3 +7,21 @@
 .hidden {
     visibility: hidden;
 }
+
+.comment-general{
+background-color: lightblue;
+}
+.comment-specific{
+background-color: darkblue;
+}
+.add-comment{
+background-color: yellow;
+}
+
+.h-100{
+margin-top:10%;
+}
+
+.description{
+background-color: pink;
+}

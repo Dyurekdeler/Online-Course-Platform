@@ -64,8 +64,12 @@
    <ul class="list-group" id="myCoursesList">
 
        {% for course in courses %}
+
             <label>Category {{ course.5 }}</label>
+
+           <div class="d-flex justify-content-center h-100">
            <a id="{{course.0}}" href="{% url 'course' personid course.0 %}">{{course.1}}</a><img class="thumbnail" src="{{course.7}}"><p>{{course.2}}</p>
+               </div>
        <label>Lecturer {{ course.6 }}</label>
        {% endfor %}
     </ul>

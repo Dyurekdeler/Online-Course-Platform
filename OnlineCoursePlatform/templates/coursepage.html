@@ -26,6 +26,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             {% if personid == '0' %}
@@ -79,15 +80,27 @@
 <div class="container h-100">
     <div class="d-flex justify-content-center h-100">
         <p>{{ course.1 }}</p>
+    </div>
+    <div class="d-flex justify-content-center h-100">
         <iframe width="420" height="315" src="{{ course.4 }}" frameborder="0" allowfullscreen></iframe>
+        </div>
+    <div class="d-flex justify-content-center h-100">
+        <div class="description">
         <p>{{ course.2 }}</p>
+        </div>
+        </div>
         {% if personid == '0' %}
+    <div class="d-flex justify-content-center h-100">
             <label>Log in to buy this course!</label>
-
+        </div>
         {% else %}
                 {% if persontype == 'STU' %}
+    <div class="d-flex justify-content-center h-100">
                 <button id="report" class="btn">Report Abuse</button>
+        </div>
+        <div class="d-flex justify-content-center h-100">
                 <a href="{% url 'favorite' personid course.0 %}">Add to Favorite</a>
+            </div>
 
                 {% endif %}
 
@@ -99,18 +112,23 @@
        {% endif %}
          <ul class="list-group" id="courseComments">
 
+             <div class="comment-general">
              {% if comments is defined %}
                    {% for comment in comments %}
+                            <div class="comment-specific">
                         <label>User Name {{ comment.0 }}</label>
                          <label>Comment Title {{ comment.2 }}</label>
                         <p>{{comment.1}}</p>
                          <label>Date : {{comment.3}}</label>
+                            </div>
                    {% endfor %}
+                 </div>
              {% endif %}
     </ul>
 
         {% if personid != '0' %}
         <div class="d-flex justify-content-center form_container">
+        <div class="add-comment">
 					<form action="{% url 'add-comment' personid course.0 %}" method="post">
 
                         <div class="input-group mb-3">
@@ -129,6 +147,7 @@
 				 	<button type="submit" name="button" class="btn">Add Comment</button>
                             </div>
                     </form>
+        </div>
         </div>
         {% endif %}
 
