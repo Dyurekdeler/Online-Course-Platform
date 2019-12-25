@@ -60,6 +60,9 @@ class Query:
         try:
             self.cursor.execute(query)
             return "SUCCESS"
+        except psycopg2.Error as e:
+            print(e.pgerror)
+            raise Exception(e.pgerror)
         except:
             raise (sys.exc_info()[1])
 

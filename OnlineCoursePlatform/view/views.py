@@ -1,10 +1,8 @@
 from django.contrib import messages
 from django.core.serializers import json
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.core import serializers
 import json
 from datetime import date
 import controller.controller as CONT
@@ -13,7 +11,6 @@ from Model.Student import Student
 from Model.Lecturer import Lecturer
 from view.forms import loginForm, signUpForm, courseForm, commentForm, reportForm, passwordForm, \
     profileChangeForm
-from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
@@ -23,12 +20,12 @@ def home(request):
 
 def home_user(request,person_id):
     courses = CONT.get_from_db(MACRO.GET_ALL_COURSES)  # retrieve query set from db
-    if courses[0] == 'SUCCESS' and len(courses[1]) > 0:
+    if courses[0] == 'SUCCESS' and len(courses[1][0]) > 0:
         if person_id == '0':
             return render(request, "home.html", {'courses':courses[1], 'personid':person_id, 'persontype':'notype'})
         else:
-            person_name_type = CONT.get_from_db(MACRO.get_user_type(person_id))
-            if person_name_type[0] == 'SUCCESS' and len(person_name_type[1]) > 0:
+            person_name_type = CONT.get_from_db(MACRO.get_user(person_id))
+            if person_name_type[0] == 'SUCCESS' and len(person_name_type[1][0]) > 0:
                 if person_name_type[1][0][1] == 'STU':
                     return render(request, "home.html", {'courses':courses[1], 'personid':person_id, 'personname':person_name_type[1][0][0], 'persontype':person_name_type[1][0][1]})
                 else:
@@ -46,21 +43,23 @@ def login(request,person_id):
     return render(request, "login.html", {'personid':person_id})
 
 def mycourses(request,person_id):
-    person_type = CONT.get_from_db(MACRO.get_user_type(person_id))
-    print(person_type)
-    if person_type[0] == 'SUCCESS' and len(person_type[1])>0:
-        if(person_type[1][0][1] == 'STU'):
+    user = CONT.get_from_db(MACRO.get_user(person_id))
+    if user[0] == 'SUCCESS' and len(user[1][0])>0:
+        if(user[1][0][8] == 'STU'):
             ordered_courses = CONT.get_from_db(MACRO.get_ordered_courses(person_id))  # retrieve query set from db
-            if ordered_courses[0] == 'SUCCESS' and len(ordered_courses[1])>0:
-                return render(request, "mycourses.html", {'personid':person_id, 'persontype':person_type[1][0][1], 'courses':ordered_courses[1]})
+            if ordered_courses[0] == 'SUCCESS' and len(ordered_courses[1][0])>0:
+                return render(request, "mycourses.html", {'personid':person_id, 'persontype':user[1][0][8], 'courses':ordered_courses[1]})
         else:
             lecturer_courses = CONT.get_from_db(MACRO.get_course_of_lecturer(person_id))
-            if lecturer_courses[0] == 'SUCCESS' and len(lecturer_courses[1]) > 0:
-                return render(request, "mycourses.html", {'personid':person_id,  'persontype':person_type[1][0][1], 'courses':lecturer_courses[1]})
+            if lecturer_courses[0] == 'SUCCESS' and len(lecturer_courses[1][0]) > 0:
+                return render(request, "mycourses.html", {'personid':person_id,  'persontype':user[1][0][8], 'courses':lecturer_courses[1]})
     return redirect(reverse('home', kwargs={'person_id': person_id}))
 
 def admin(request):
-    return render(request, "admin.html")
+    unis = CONT.get_from_db(MACRO.GET_ALL_UNIS)
+    if unis[0] == 'SUCCESS' and len(unis[1][0])>0:
+        return render(request, "admin.html", {'universities':unis[1]})
+    return redirect(reverse('home', kwargs={'person_id': '0'}))
 
 def add_course(request, person_id):
     return render(request, "addcourse.html", {'personid':person_id})
@@ -70,7 +69,7 @@ def course_page(request,person_id,course_id):
     sent_comments = None
     sent_is_bought = False
     course = CONT.get_from_db(MACRO.get_course(course_id))  # retrieve query set from db
-    if (course[0] == 'SUCCESS' and len(course[1]) > 0):
+    if (course[0] == 'SUCCESS' and len(course[1][0]) > 0):
         cmnt_counts = CONT.get_from_db(MACRO.get_comment_counts(course_id))
         if cmnt_counts[0] == 'SUCCESS' and len(cmnt_counts[1][0]) > 0:
             if cmnt_counts[1][0][1]>0:
@@ -87,7 +86,7 @@ def course_page(request,person_id,course_id):
             #exit comment count could not reached
             return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
         if person_id != '0':
-            user = CONT.get_from_db(MACRO.get_user_type(person_id))
+            user = CONT.get_from_db(MACRO.get_user(person_id))
             if user[0] == 'SUCCESS' and len(user[1][0]) > 0:
                 order = CONT.get_from_db(MACRO.get_bought_course(course_id, person_id))
                 if order[0] == 'SUCCESS' and len(order[1][0]) > 0:
@@ -96,26 +95,24 @@ def course_page(request,person_id,course_id):
                     sent_is_bought = False
                 if sent_comments is not None:
                     return render(request, "coursepage.html",
-                                  {'course': course[1][0], 'comments': sent_comments[1], 'personid': person_id,
-                                   'persontype': user[1][0][1], 'bought': sent_is_bought})
+                                  {'course': course[1][0], 'comments': sent_comments, 'personid': person_id,
+                                   'persontype': user[1][0][8], 'bought': sent_is_bought})
                 else:
                     return render(request, "coursepage.html",
                                   {'course': course[1][0], 'personid': person_id,
-                                   'persontype': user[1][0][1], 'bought': sent_is_bought})
+                                   'persontype': user[1][0][8], 'bought': sent_is_bought})
             else:
                 #exit useer not found
                 return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
         else:
             if sent_comments is not None:
                 return render(request, "coursepage.html",
-                              {'course': course[1][0], 'comments': sent_comments[1], 'personid': person_id,
+                              {'course': course[1][0], 'comments': sent_comments, 'personid': person_id,
                                'persontype': 'guest'})
             else:
                 return render(request, "coursepage.html",
                               {'course': course[1][0],  'personid': person_id,
                                'persontype': 'guest'})
-
-
     else:
         #exit course not found
         return redirect(reverse('home', kwargs={'person_id': person_id}))  # when there is no course
@@ -123,21 +120,16 @@ def course_page(request,person_id,course_id):
     return redirect(reverse('home', kwargs={'person_id': person_id})) #when there is no course
 
 def profile(request, person_id):
-    user = CONT.get_from_db(MACRO.get_user_by_id(person_id))
-    try:
-        unis = CONT.get_from_db(MACRO.GET_ALL_UNIS)  # retrieve query set from db
-        if user[0] == 'SUCCESS' and len(user[1]) > 0:
-            uni = CONT.get_from_db(MACRO.get_user_uni(user[1][0][0], user[1][0][8]))
-            if uni[0] == 'SUCCESS' and len(uni[1]) > 0:
-                user = user[1][0]
-                return render(request, "profile.html",
+    user = CONT.get_from_db(MACRO.get_user(person_id))
+    unis = CONT.get_from_db(MACRO.GET_ALL_UNIS)
+    if (user[0] == 'SUCCESS' and len(user[1][0]) > 0) and (unis[0] == 'SUCCESS' and len(unis[1][0]) > 0):
+        user = user[1][0]
+        return render(request, "profile.html",
                               {'personid': user[0], 'firstname': user[1], 'lastname': user[2], 'email': user[3],
                                'password': user[4], 'bday': user[5], 'address': user[6], 'phone': user[7],
-                               'persontype': user[8], 'university': uni[1][0][0], 'universities':unis[1]})
-    except Exception:
-        return redirect(reverse('home', kwargs={'person_id': person_id}))
+                               'persontype': user[8], 'universityname': user[10], 'universities':unis[1]})
 
-    return redirect(reverse('home', kwargs={'person_id':'0'}))  # when there are db error
+    return redirect(reverse('home', kwargs={'person_id': person_id})) # if error >> return to homepage
 
 @csrf_exempt
 def check_login(request):
@@ -145,14 +137,18 @@ def check_login(request):
         form = loginForm(request.POST)
 
         if form.is_valid():
-            username = form.data['username']
+            username = form.data['username']  #username is person's email
             password = form.data['password']
-            user = CONT.get_from_db(MACRO.get_user(username, password))
-            if user[0] == 'SUCCESS' and len(user[1])>0:
-                return redirect(reverse('profile', kwargs={'person_id': user[1][0][0]})) # succesful login
+
+            auth = CONT.get_from_db(MACRO.authenticate_user(username, password))
+            if auth[0] == 'SUCCESS' and len(auth[1][0])>0 and auth[1][0][1] != '0':
+                user = CONT.get_from_db(MACRO.get_user(auth[1][0][0]))
+                if user[0] == 'SUCCESS' and len(user[1][0])>0:
+                    return redirect(reverse('profile', kwargs={'person_id': user[1][0][0]})) #successful login
+
             messages.add_message(request, messages.INFO, "Invalid username or password!")
             return redirect(reverse('login', kwargs={'person_id': '0'}))  # credentials does not match
-        return redirect(reverse('home', kwargs={'person_id': '0'}))
+        return redirect(reverse('home', kwargs={'person_id': '0'})) #db error
 
 @csrf_exempt
 def check_signup(request):
@@ -220,11 +216,12 @@ def update_account(request,person_id):
                 CONT.update_db(MACRO.update_person(person_id, firstname, lastname, email, address, phone, bday, university))
                 return profile(request, person_id)
             except:
-                return render(request,"home.html")
+                return redirect(reverse('home', kwargs={'person_id': person_id}))
     return render(request, 'profile.html')
 
 def delete_account(request,person_id):
     #BURAYA DELETE PROCEDUR YAZMALIYIZ
+
     pass
 
 def change_pw(request, person_id):
@@ -239,8 +236,8 @@ def change_pw(request, person_id):
             CONT.update_db(MACRO.update_password(person_id, new_pw))
             return render(request, 'profile.html')
         except:
-            return render(request, "home.html")
-    return render(request, "home.html")
+            return redirect(reverse('home', kwargs={'person_id': person_id}))
+    return redirect(reverse('home', kwargs={'person_id': person_id}))
 
 def buy_course(request,person_id,course_id):
     today = date.today()
@@ -255,13 +252,9 @@ def buy_course(request,person_id,course_id):
 def reload_table(request):
     table_id = (request.GET.get('table_id' , False)).strip('/"')
     if table_id == 'person':
-        table_data = CONT.get_from_db(MACRO.GET_ALL_PEOPLE)
+        table_data = CONT.get_from_db(MACRO.GET_ALL_USERS)
     elif table_id == 'university':
         table_data = CONT.get_from_db(MACRO.GET_ALL_UNIS)
-    elif table_id == 'student':
-        table_data = CONT.get_from_db(MACRO.GET_ALL_STUDENTS)
-    elif table_id == 'lecturer':
-        table_data = CONT.get_from_db(MACRO.GET_ALL_LECTURERS)
     elif table_id == 'course':
         table_data = CONT.get_from_db(MACRO.GET_ALL_COURSES)
     elif table_id == 'comment':
@@ -346,56 +339,50 @@ def process_data(request):
     if newvalue8 != None:
         newvalue8 = newvalue8.strip('/"')
     if newvalue9 != None:
-        newvalue9 = newvalue8.strip('/"')
+        newvalue9 = newvalue9.strip('/"')
 
     if table_id == 'person':
         query = MACRO.add_person(newvalue1, newvalue2, newvalue3,newvalue4, newvalue5, newvalue6, newvalue7, newvalue8,  newvalue9)
         if intent == 'edit':
-            query = MACRO.update_person(data_id, newvalue1, newvalue2, newvalue3)
+            query = MACRO.update_person(data_id, newvalue1, newvalue2, newvalue3,newvalue4, newvalue5, newvalue6, newvalue7, newvalue8,  newvalue9)
     elif table_id == 'university':
-        query = MACRO.add_clicksrc(newvalue1, newvalue2)
+        query = MACRO.add_uni(newvalue1, newvalue2)
         if intent == 'edit':
-            query = MACRO.update_clicksrc(data_id, newvalue1, newvalue2)
+            query = MACRO.update_uni(data_id, newvalue1, newvalue2)
     elif table_id == 'course':
-        query = MACRO.add_language(newvalue1, newvalue2, newvalue3)
+        query = MACRO.add_course(newvalue1, newvalue1, newvalue2, newvalue3,newvalue4, newvalue5, newvalue6, newvalue7)
         if intent == 'edit':
-            query = MACRO.update_language(data_id, newvalue1, newvalue2, newvalue3)
+            query = MACRO.update_course(data_id, newvalue1, newvalue2, newvalue3,newvalue4, newvalue5, newvalue6, newvalue7)
     elif table_id == 'comment':
-        query = MACRO.add_serviceproperty(newvalue1, newvalue2)
+        query = MACRO.add_comment_to_course(newvalue1, newvalue2, newvalue3,newvalue4, newvalue5)
         if intent == 'edit':
-            query = MACRO.update_serviceproperty(data_id, newvalue1, newvalue2)
+            query = MACRO.update_comment(data_id, newvalue1, newvalue2, newvalue3,newvalue4, newvalue5)
     elif table_id == 'report':
-        query = MACRO.add_ad(newvalue1, newvalue2)
+        query = MACRO.add_report_to_course(newvalue1, newvalue2, newvalue3,newvalue4)
         if intent == 'edit':
-            query = MACRO.update_ad(data_id, newvalue1, newvalue2)
+            query = MACRO.update_report(data_id, newvalue1, newvalue2, newvalue3,newvalue4)
     elif table_id == 'order':
-        query = MACRO.add_adConfig(newvalue1, newvalue2, newvalue3, newvalue4)
+        query = MACRO.buy_course(newvalue1, newvalue2, newvalue3)
         if intent == 'edit':
-            query = MACRO.update_adConfig(data_id, newvalue1, newvalue2, newvalue3, newvalue4)
+            query = MACRO.update_order(data_id, newvalue1, newvalue2, newvalue3)
     else:
         query = None
     if intent == 'add':
-        if table_id == 'ad':
-            try:
-                auto_created_id = CONT.get_from_db(query, request.session['database'])[0][0]
-            except Exception as ex:
-                return JsonResponse({'status': '400', 'response': str(ex)})
-            return JsonResponse(
-                {'status': '200', 'response': 'Added the new record :' + str(data_id) + ' successfully!',
-                 'auto_created_id': auto_created_id})
-        else:
-            try:
-                CONT.insert_db(query, request.session['database'])
-            except Exception as ex:
-                return JsonResponse({'status': '400', 'response': str(ex)})
-        return JsonResponse({'status': '200', 'response': 'Added the new record :' + str(data_id) + ' successfully!'})
+        try:
+            CONT.insert_db(query)
+            return JsonResponse({'status': '200'})
+        except Exception as ex:
+            return JsonResponse({'status': '400'})
 
     elif intent == 'edit':
         try:
-            CONT.update_db(query, request.session['database'])
+            CONT.update_db(query)
+            return JsonResponse({'status': '200'})
         except Exception as ex:
-            return JsonResponse({'status': '400', 'response': str(ex)})
-    return JsonResponse({'status': '200', 'response': 'Updated the data :' + str(data_id) + '!'})
+            return JsonResponse({'status': '400'})
+
+
+
 
 @csrf_exempt
 def submit_report(request, person_id, course_id):
@@ -427,3 +414,14 @@ def favorites(request, person_id):
     if favs[0] == 'SUCCESS' and len(favs[1][0])>0:
         return render(request, "favoritecourses.html", {'personid':person_id, 'courses':favs[1]})
     return redirect(reverse('home', kwargs={'person_id': person_id}))
+
+
+@csrf_exempt
+def remove_data(request):
+    data_id = (request.POST.get('id' , False)).strip('/"')
+    table_id = (request.POST.get('table_id', False)).strip('/"')
+    try:
+        CONT.update_db(MACRO.remove_by_id(data_id,table_id))
+        return JsonResponse({'status': '200'})
+    except Exception as ex:
+        return JsonResponse({'status':'400'})

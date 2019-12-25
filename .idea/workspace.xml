@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fca5ca6b-7635-4d5c-8994-4e03511854d6" name="Default Changelist" comment="" />
+    <list default="true" id="fca5ca6b-7635-4d5c-8994-4e03511854d6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/OCP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/OCP.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/online_course_platform_new.sql" beforeDir="false" afterPath="$PROJECT_DIR$/online_course_platform_new.sql" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,6 +32,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/OnlineCoursePlatform" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -67,9 +73,26 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="776" y="310" width="424" height="484" key="FileChooserDialogImpl" timestamp="1576646706510">
-      <screen x="67" y="27" width="2877" height="1053" />
+    <state x="1612" y="214" width="800" height="677" key="#Notifications" timestamp="1577254965962">
+      <screen x="1024" y="0" width="1920" height="1080" />
     </state>
+    <state x="1612" y="214" width="800" height="677" key="#Notifications/1024.0.1920.1080/0.312.1024.768@1024.0.1920.1080" timestamp="1577254965962" />
+    <state x="1497" y="290" width="379" height="497" key="FileChooserDialogImpl" timestamp="1577268086604">
+      <screen x="1024" y="0" width="1920" height="1080" />
+    </state>
+    <state x="1497" y="290" width="379" height="497" key="FileChooserDialogImpl/1024.0.1920.1080/0.312.1024.768@1024.0.1920.1080" timestamp="1577268086604" />
     <state x="776" y="310" width="424" height="484" key="FileChooserDialogImpl/67.27.2877.1053@67.27.2877.1053" timestamp="1576646706510" />
+    <state x="1506" y="187" key="SettingsEditor" timestamp="1577267367463">
+      <screen x="1024" y="0" width="1920" height="1080" />
+    </state>
+    <state x="1506" y="187" key="SettingsEditor/1024.0.1920.1080/0.312.1024.768@1024.0.1920.1080" timestamp="1577267367463" />
+    <state x="1673" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1577267388032">
+      <screen x="1024" y="0" width="1920" height="1080" />
+    </state>
+    <state x="1673" y="380" key="com.intellij.ide.util.TipDialog/1024.0.1920.1080/0.312.1024.768@1024.0.1920.1080" timestamp="1577267388032" />
+    <state x="43" y="356" width="878" height="668" key="dock-window-1" timestamp="1577258153581">
+      <screen x="0" y="312" width="1024" height="768" />
+    </state>
+    <state x="43" y="356" width="878" height="668" key="dock-window-1/1024.0.1920.1080/0.312.1024.768@1024.0.1920.1080" timestamp="1577258153581" />
   </component>
 </project>

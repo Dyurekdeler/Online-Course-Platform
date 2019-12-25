@@ -13,6 +13,12 @@
   margin: 0 auto;
 }
 
+.panel-body{
+  text-align: center;
+margin-top:10%;
+
+}
+
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
@@ -21,11 +27,21 @@
   width: 850px;
 }
 
+.add, .remove, .edit{
+
+width:17%;
+height:5%;
+margin-left:2%;
+}
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
+}
+
+#uni-selection{
+width:90%;
 }
 
 .close:hover,
@@ -126,4 +142,8 @@ float:right;
 .modal-label.counter {
  float:right;
  margin-right: 20%;
+}
+
+.btn-bar{
+    width:100%;
 }

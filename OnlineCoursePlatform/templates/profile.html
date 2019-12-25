@@ -86,7 +86,7 @@
     	<div class="input-group-prepend">
 		    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
 		</div>
-    	<input id="university" name="university" class="form-control" placeholder="University"  value=" {{ university }}" type="text" style="display: None" REQUIRED>
+    	<input id="university" name="university" class="form-control" placeholder="University"  value=" {{ universityname }}" type="text" style="display: None" REQUIRED>
 			 <select id="uni-selection" class="custom-select">
 				 {% for uni in universities %}
                 	<option value="{{ uni.0 }}">{{ uni.1 }}</option>

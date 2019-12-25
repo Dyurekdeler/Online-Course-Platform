@@ -27,4 +27,5 @@ urlpatterns = [
     path('add_favorite/(?P<person_id>[0-9]+)/(?P<course_id>[0-9]+)', views.add_favorite, name="favorite"),
     path('myfavorites/(?P<person_id>[0-9]+)', views.favorites, name="myfavorites"),
     path('change-pw/(?P<person_id>[0-9]+)', views.change_pw, name="change-pw"),
+    path('deletedata/', views.remove_data),
 ]

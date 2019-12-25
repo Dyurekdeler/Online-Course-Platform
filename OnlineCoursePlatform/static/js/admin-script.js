@@ -34,14 +34,16 @@ $(document).ready(function () {
 
         //add row action
         $('.add').on('click',function(){
-            table_id = this.closest('div').getElementsByTagName('table')[0].id
+            table_id = this.closest('div.card.card-body').getElementsByTagName('table')[0].id
             auto_fill_modal(activeRow, table_id, 'add');
            $(".modal").css("display", "block");
         });
 
         $('.change').on('click', function(){
+            console.log('clicked the change btn')
             var id = $('#inputid').val();
-            var tableid = $('#header').text();
+            var intent = $('#inputintent').val();
+            var tableid = $('#header').val();
             var newvalue1 = $('#input1').val();
             var newvalue2 = $('#input2').val();
             var newvalue3 = $('#input3').val();
@@ -50,10 +52,30 @@ $(document).ready(function () {
             var newvalue6 = $('#input6').val();
             var newvalue7 = $('#input7').val();
             var newvalue8 = $('#input8').val();
-            var newvalue9 = $('#input9').val();
-
+            if(tableid == 'person'){
+                var newvalue9 = $('#university').val();
+            }
+            else
+                var newvalue9 = $('#input9').val();
+            console.log(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, newvalue9, tableid, intent);
             post_data(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, newvalue9, tableid, intent);
         });
+
+
+        $('.remove').on('click', function(){
+                table_id = this.closest('div.card.card-body').getElementsByTagName('table')[0].id;
+                delete_data(tableid, activeRow);
+        });
+
+
+        //as user selects an option from uni combobox, write it to a hidden input element for form action
+    var uni = document.getElementById("university");
+    uni.value= 1;
+    $('#uni-selection').on('click', function() {
+        var selection = document.getElementById("uni-selection");
+        var selVal = selection.options[selection.selectedIndex].value;
+        uni.value= selVal;
+    });
 
 });
 
@@ -68,6 +90,12 @@ function initialize_tables() {
         },
 
         "iDisplayLength": 25,
+        "columnDefs": [
+            {
+                "targets": [9],
+                "visible": false,
+            },
+        ],
         "columns": [
             {
                 "name": "ID",
@@ -105,6 +133,15 @@ function initialize_tables() {
                 "name": "Person Type",
                 
             },
+             {
+                "name": "University ID",
+
+            },
+             {
+                "name": "University Name",
+
+            },
+
         ]
     });
     
@@ -249,44 +286,12 @@ function initialize_tables() {
             },
         ]
     });
-    var reportlist = $('#reportlist').DataTable({
-        "ajax": {
-            "processing": true,
-            "url": "/reloadtable/",
-            "data": { 'table_id': JSON.stringify('report') },
-            "dataType": "json",
-            "dataSrc": ""
-        },
 
-        "iDisplayLength": 25,
-        "columns": [
-            {
-                "name": "ID",
-
-            },
-            {
-                "name": "Student ID",
-
-            },
-            {
-                "name": "Description",
-
-            },
-            {
-                "name": "Course ID",
-
-            },
-            {
-                "name": "Report Date",
-
-            },
-        ]
-    });
     var orderlist = $('#orderlist').DataTable({
         "ajax": {
             "processing": true,
             "url": "/reloadtable/",
-            "data": { 'table_id': JSON.stringify('report') },
+            "data": { 'table_id': JSON.stringify('order') },
             "dataType": "json",
             "dataSrc": ""
         },
@@ -323,6 +328,10 @@ function auto_fill_modal(activeRow, table_id,  action) {
 
     $('.modal-label').css('display','block');
     $('.modal-input').val("");
+    $('#normal_input').css('display','block');
+    $('#uni_select_input').css('display','none');
+
+
 
     var jquery_tableid = '#'+table_id;
     var table = $(jquery_tableid).DataTable();
@@ -333,6 +342,9 @@ function auto_fill_modal(activeRow, table_id,  action) {
     switch (table_id) {
         case 'personlist':
             $('#header').val('person');
+            $('#normal_input').css('display','none');
+            $('#uni_select_input').css('display','block');
+
             var person = ['First Name','Last Name', 'Email','Password','Birthdate','Address','Phone','Person Type','University Name']
             for(var i=1; i<10; i++){
             var labelid='#label'+i;
@@ -423,10 +435,11 @@ function auto_fill_modal(activeRow, table_id,  action) {
  }
 
  function post_data(id, newvalue1, newvalue2, newvalue3, newvalue4, newvalue5, newvalue6, newvalue7, newvalue8, newvalue9, tableid, intent) {
+
     // id == -999 represents DB will assign auto-incremental id
     $.ajax({
         type: "POST",
-        url: '/processdata/',
+        url: '../processdata/',
         data: {
             'intent': JSON.stringify(intent),
             'table_id': JSON.stringify(tableid.replace('list', '')),
@@ -439,7 +452,7 @@ function auto_fill_modal(activeRow, table_id,  action) {
             'newvalue6': JSON.stringify(newvalue6),
             'newvalue7': JSON.stringify(newvalue7),
             'newvalue8': JSON.stringify(newvalue8),
-            'newvalue9': JSON.stringify(newvalue9),
+            'newvalue9': JSON.stringify(newvalue9)
 
         },
         dataType: "json",
@@ -449,8 +462,7 @@ function auto_fill_modal(activeRow, table_id,  action) {
             closeModal('editModal');
         }
         else
-            alert(response['response']);
-            enable_btn();
+            alert('Error occured while manupulating the data!');
     });
 }
 
@@ -458,4 +470,34 @@ function refresh(table_id) {
     var element = '#' + table_id
     var table = $(element).DataTable();
     table.ajax.reload();
+}
+
+function delete_data(tableid, activeRow){
+
+    var jquery_tableid = '#'+table_id;
+    var table = $(jquery_tableid).DataTable();
+    table_row = table.row(activeRow).data();
+    id = table_row[0];
+
+$.ajax({
+        type: "POST",
+        url: '../deletedata/',
+        data: {
+
+            'table_id': JSON.stringify(tableid.replace('list', '')),
+            'data_id': JSON.stringify(id),
+
+        },
+        dataType: "json",
+    }).done(function (response) {
+        if (response['status'] == '200') {
+            refresh(tableid);
+            closeModal('editModal');
+        }
+        else
+            alert('Error occured while manupulating the data!');
+    });
+
+
+
 }

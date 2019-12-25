@@ -19,21 +19,21 @@ CREATE TABLE tbl_university (
 );
 
 CREATE TABLE tbl_student(
-	student_id INT NOT NULL PRIMARY KEY,
-	university_id INT,
+	student_id INT NOT NULL PRIMARY KEY ON DELETE CASCADE,
+	university_id INT ON DELETE CASCADE,
 	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id),
 	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_person"(person_id)
 );
 
 CREATE TABLE tbl_lecturer(
-	lecturer_id INT NOT NULL PRIMARY KEY,
-	university_id INT NOT NULL,
+	lecturer_id INT NOT NULL PRIMARY KEY ON DELETE CASCADE,
+	university_id INT NOT NULL ON DELETE CASCADE,
 	CONSTRAINT "fk_lecturerId" FOREIGN KEY("lecturer_id") REFERENCES public."tbl_person"(person_id),
 	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id)
 );
 
 CREATE TABLE tbl_supervisor(
-	supervisor_id INT NOT NULL PRIMARY KEY,
+	supervisor_id INT NOT NULL PRIMARY KEY ON DELETE CASCADE,
 	authority_level INT DEFAULT 0 NOT NULL,
 	CONSTRAINT "fk_supervisorId" FOREIGN KEY("supervisor_id") REFERENCES public."tbl_person"(person_id)
 );
@@ -45,7 +45,7 @@ CREATE TABLE tbl_course (
 	price FLOAT NOT NULL,
 	video_link TEXT NOT NULL,
 	category TEXT NOT NULL,
-	lecturer_id INT NOT NULL,
+	lecturer_id INT NOT NULL ON DELETE CASCADE,
 	thumbnail TEXT NOT NULL,
 	CHECK((thumbnail LIKE 'https://%') or (thumbnail LIKE 'http://%')),
 	CHECK (category in ('software','language','economy','fine arts','sport')),
@@ -54,10 +54,10 @@ CREATE TABLE tbl_course (
 
 CREATE TABLE tbl_comment (
 	comment_id SERIAL PRIMARY KEY,
-	person_id INT NOT NULL,
+	person_id INT NOT NULL ON DELETE CASCADE,
 	description TEXT NOT NULL,
 	title TEXT NOT NULL,
-	course_id INT NOT NULL,
+	course_id INT NOT NULL ON DELETE CASCADE,
 	post_date TIMESTAMP WITH TIME ZONE NOT NULL,
 	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id),
 	CONSTRAINT "fk_personId" FOREIGN KEY("person_id") REFERENCES public."tbl_person"(person_id)
@@ -76,23 +76,23 @@ CREATE TABLE tbl_report (
 
 CREATE TABLE tbl_order (
 	order_id SERIAL PRIMARY KEY,
-	student_id INT NOT NULL,
-	course_id INT NOT NULL,
+	student_id INT NOT NULL ON DELETE CASCADE,
+	course_id INT NOT NULL ON DELETE CASCADE,
 	order_date TIMESTAMP WITH TIME ZONE NOT NULL,
 	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id),
 	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id)
 );
 
 CREATE TABLE tbl_favorites (
-	student_id INT NOT NULL REFERENCES tbl_student(student_id),
-	course_id INT NOT NULL REFERENCES tbl_course(course_id),
+	student_id INT NOT NULL REFERENCES tbl_student(student_id) ON DELETE CASCADE,
+	course_id INT NOT NULL REFERENCES tbl_course(course_id) ON DELETE CASCADE ,
 	primary key(student_id,course_id)
 );
 
 CREATE TABLE tbl_logs(
 	log_id SERIAL PRIMARY KEY,
 	log_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	admin_id INT NOT NULL REFERENCES tbl_supervisor(supervisor_id),
+	admin_id INT NOT NULL REFERENCES tbl_supervisor(supervisor_id) ON DELETE CASCADE,
 	sql_operation TEXT NOT NULL 
 );
 
@@ -147,16 +147,16 @@ END IF;
 END;
 $$;
 
-CREATE OR REPLACE VIEW students_and_unis AS
-SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, U.university_id, university_name
+
+CREATE OR REPLACE VIEW users AS
+SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, person_type, U.university_id, university_name
 FROM tbl_person P
 INNER JOIN tbl_student S
 ON S.student_id = P.person_id
 INNER JOIN tbl_university U
 ON S.university_id = U.university_id
-
-CREATE OR REPLACE VIEW lecturers_and_unis AS
-SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, U.university_id, university_name
+UNION
+SELECT person_id, first_name, last_name, email, password, date_of_birth, address, phone, person_type, U.university_id, university_name
 FROM tbl_person P
 INNER JOIN tbl_lecturer L
 ON L.lecturer_id = P.person_id
@@ -164,19 +164,21 @@ INNER JOIN tbl_university U
 ON L.university_id = U.university_id
 
 
+
 INSERT INTO public.tbl_university(university_name, university_location)
 	VALUES ('Dokuz Eylül Üniversitesi', 'İzmir'),
 	('Ege Üniversitesi', 'İzmir');
 
 
-CALL add_person('Deniz','Yürekdeler','dyurekdeler@live.com',12345678,'01.01.1970','izmir','0554413061','STU');
-CALL add_person('Semih','Utku','semihutku@mail.com',12345678,'01.01.1970','izmir','0554413061','LEC');
+CALL add_person('Deniz','Yürekdeler','dyurekdeler@live.com','12345678','01.01.1970','izmir','0554413061',2,'STU');
+CALL add_person('Semih','Utku','semihutku@mail.com','12345678','01.01.1970','izmir','0554413061',1,'LEC');
 
 INSERT INTO public.tbl_course(
 	title, description, price, video_link, category, lecturer_id, thumbnail)
-	VALUES ('android','desc',15,'https://www.youtube.com/embed/KpwoBlDLxq0','software',1,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg'),
-	 ('web','desc',15,'https://www.youtube.com/embed/KpwoBlDLxq0','software',1,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg'),
-	 ('database','desc',15,'https://www.youtube.com/embed/KpwoBlDLxq0','software',1,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg');
+	VALUES ('android','this course teaches android applications',15,'https://www.youtube.com/embed/KpwoBlDLxq0','software',2,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg'),
+	 ('web','this course teaches how to develop web pages',15,'https://www.youtube.com/embed/KpwoBlDLxq0','software',2,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg'),
+	 ('database','this course focuses on database design',15,'https://www.youtube.com/embed/KpwoBlDLxq0','software',2,'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg');
+
 
 INSERT INTO public.tbl_order(
 	student_id, course_id, order_date)
@@ -193,13 +195,14 @@ INSERT INTO public.tbl_favorites(
 	VALUES (1,1);
 
 INSERT INTO public.tbl_report(
-	report_id, student_id, description, course_id, report_date)
+	student_id, description, course_id, report_date)
 	VALUES (1,'It is not teaching what the title says',2,'05.05.2018');
 
 
 CREATE USER nisakko WITH PASSWORD '123456';
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nisakko;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO nisakko;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO nisakko;
 
 select pg_terminate_backend(pid) from pg_stat_activity where datname='Online_Course_Platform'
 
@@ -215,3 +218,12 @@ LEFT OUTER JOIN tbl_comment
 ON tbl_course.course_id = tbl_comment.course_id 
 WHERE tbl_course.course_id = 2
 GROUP BY tbl_course.course_id 
+
+ALTER SEQUENCE payments_id_seq RESTART WITH 1;
+
+LOGGGGGG ::: https://jackworthen.com/2018/03/19/creating-a-log-table-to-track-changes-to-database-objects-in-sql-server/
+
+
+
+
+
