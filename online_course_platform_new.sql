@@ -19,23 +19,23 @@ CREATE TABLE tbl_university (
 );
 
 CREATE TABLE tbl_student(
-	student_id INT NOT NULL PRIMARY KEY ON DELETE CASCADE,
-	university_id INT ON DELETE CASCADE,
-	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id),
-	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_person"(person_id)
+	student_id INT NOT NULL PRIMARY KEY ,
+	university_id INT,
+	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id) ON DELETE CASCADE,
+	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_person"(person_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_lecturer(
-	lecturer_id INT NOT NULL PRIMARY KEY ON DELETE CASCADE,
-	university_id INT NOT NULL ON DELETE CASCADE,
-	CONSTRAINT "fk_lecturerId" FOREIGN KEY("lecturer_id") REFERENCES public."tbl_person"(person_id),
-	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id)
+	lecturer_id INT NOT NULL PRIMARY KEY ,
+	university_id INT NOT NULL ,
+	CONSTRAINT "fk_lecturerId" FOREIGN KEY("lecturer_id") REFERENCES public."tbl_person"(person_id) ON DELETE CASCADE,
+	CONSTRAINT "fk_universityId" FOREIGN KEY("university_id") REFERENCES public."tbl_university"(university_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_supervisor(
-	supervisor_id INT NOT NULL PRIMARY KEY ON DELETE CASCADE,
+	supervisor_id INT NOT NULL PRIMARY KEY,
 	authority_level INT DEFAULT 0 NOT NULL,
-	CONSTRAINT "fk_supervisorId" FOREIGN KEY("supervisor_id") REFERENCES public."tbl_person"(person_id)
+	CONSTRAINT "fk_supervisorId" FOREIGN KEY("supervisor_id") REFERENCES public."tbl_person"(person_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_course (
@@ -45,22 +45,22 @@ CREATE TABLE tbl_course (
 	price FLOAT NOT NULL,
 	video_link TEXT NOT NULL,
 	category TEXT NOT NULL,
-	lecturer_id INT NOT NULL ON DELETE CASCADE,
+	lecturer_id INT NOT NULL,
 	thumbnail TEXT NOT NULL,
 	CHECK((thumbnail LIKE 'https://%') or (thumbnail LIKE 'http://%')),
 	CHECK (category in ('software','language','economy','fine arts','sport')),
-	CONSTRAINT "fk_lecturerId" FOREIGN KEY("lecturer_id") REFERENCES public."tbl_lecturer"(lecturer_id)
+	CONSTRAINT "fk_lecturerId" FOREIGN KEY("lecturer_id") REFERENCES public."tbl_lecturer"(lecturer_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_comment (
 	comment_id SERIAL PRIMARY KEY,
-	person_id INT NOT NULL ON DELETE CASCADE,
+	person_id INT NOT NULL,
 	description TEXT NOT NULL,
 	title TEXT NOT NULL,
-	course_id INT NOT NULL ON DELETE CASCADE,
+	course_id INT NOT NULL,
 	post_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id),
-	CONSTRAINT "fk_personId" FOREIGN KEY("person_id") REFERENCES public."tbl_person"(person_id)
+	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id) ON DELETE CASCADE,
+	CONSTRAINT "fk_personId" FOREIGN KEY("person_id") REFERENCES public."tbl_person"(person_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_report (
@@ -69,18 +69,18 @@ CREATE TABLE tbl_report (
 	description TEXT NOT NULL,
 	course_id INT NOT NULL,
 	report_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id),
-	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id)
+	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id) ON DELETE CASCADE,
+	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id) ON DELETE CASCADE
 );
 
 
 CREATE TABLE tbl_order (
 	order_id SERIAL PRIMARY KEY,
-	student_id INT NOT NULL ON DELETE CASCADE,
-	course_id INT NOT NULL ON DELETE CASCADE,
+	student_id INT NOT NULL,
+	course_id INT NOT NULL,
 	order_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id),
-	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id)
+	CONSTRAINT "fk_studentId" FOREIGN KEY("student_id") REFERENCES public."tbl_student"(student_id) ON DELETE CASCADE,
+	CONSTRAINT "fk_courseId" FOREIGN KEY("course_id") REFERENCES public."tbl_course"(course_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_favorites (
@@ -89,24 +89,8 @@ CREATE TABLE tbl_favorites (
 	primary key(student_id,course_id)
 );
 
-CREATE TABLE tbl_logs(
-	log_id SERIAL PRIMARY KEY,
-	log_date TIMESTAMP WITH TIME ZONE NOT NULL,
-	admin_id INT NOT NULL REFERENCES tbl_supervisor(supervisor_id) ON DELETE CASCADE,
-	sql_operation TEXT NOT NULL 
-);
 
-CREATE OR REPLACE PROCEDURE add_log(date timestamp, adminid integer, sqlop text)
-LANGUAGE 'plpgsql'
 
-AS $$
-BEGIN
-
-INSERT INTO tbl_logs (log_date, admin_id, sql_operation) VALUES (date, adminid, sqlop);
-
-    COMMIT;
-END;
-$$;
 
 CREATE OR REPLACE PROCEDURE add_person(
 	firstname text,
@@ -186,7 +170,7 @@ INSERT INTO public.tbl_order(
 	(1,2,'15.05.2010');
 
 INSERT INTO public.tbl_comment(
-	student_id, description, title, course_id, post_date)
+	person_id, description, title, course_id, post_date)
 	VALUES (1,'This course is very helpful', 'Nice Course', 1, '24.12.2019'),
 	(1,'Teacher is fluent in English', 'Understanding', 1, '29.12.2019');
 
@@ -219,7 +203,8 @@ ON tbl_course.course_id = tbl_comment.course_id
 WHERE tbl_course.course_id = 2
 GROUP BY tbl_course.course_id 
 
-ALTER SEQUENCE payments_id_seq RESTART WITH 1;
+
+ALTER SEQUENCE tbl_course_course_id_seq RESTART WITH 1;
 
 LOGGGGGG ::: https://jackworthen.com/2018/03/19/creating-a-log-table-to-track-changes-to-database-objects-in-sql-server/
 
